@@ -25,7 +25,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => (u.Email == request.Email || u.PhoneNumber == request.PhoneNumber || u.UserName == request.UserName) 
+            .FirstOrDefaultAsync(u => (u.Email == request.Email || u.PhoneNumber == request.PhoneNumber || u.UserName == request.UserName)
             && u.IsActive, cancellationToken);
 
         if (user == null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
@@ -55,7 +55,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             ExpiresAt = DateTime.UtcNow.AddHours(1),
-            User = new UserDto
+            User = new UserDto(user.UpdatedAt ?? DateTime.UtcNow)
             {
                 Id = user.Id,
                 UserName = user.UserName,
@@ -63,12 +63,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
                 PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Gender = user.Gender
+                Gender = user.Gender,
                 IsEmailConfirmed = user.IsEmailConfirmed,
                 IsPhoneNumberConfirmed = user.IsPhoneNumberConfirmed,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt,
-                IsActive = user.IsActive
+                UpdatedAt = user.UpdatedAt ?? DateTime.UtcNow,
+                IsActive = user.IsActive,
                 RefreshTokens = user.RefreshTokens.Select(rt => new RefreshTokenDto
                 {
                     Id = rt.Id,
@@ -80,5 +80,41 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
             }
         };
     }
+}
+
+
+    public class RefreshTokenDto
+{
+    public Guid Id { get; set; }
+    public string Token { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsRevoked { get; set; }
+}
+
+public class UserDto
+{
+    public UserDto() { }
+
+    public UserDto(DateTime updatedAt)
+    {
+        UpdatedAt = updatedAt;
+    }
+
+    public Guid Id { get; set; }
+    public string UserName { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public bool Gender { get; set; }
+    public bool IsEmailConfirmed { get; set; }
+    public bool IsPhoneNumberConfirmed { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public bool IsActive { get; set; }
+
+    // Use a collection of the DTO type
+    public List<RefreshTokenDto> RefreshTokens { get; set; } = new List<RefreshTokenDto>();
 }
 

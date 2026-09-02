@@ -4,8 +4,8 @@ using Identity.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Identity.Application.Features.Auth.Commands.Signup;
-
+namespace Identity.Application.Features.Auth.Commands.Signup
+{
 public class SignupCommandHandler : IRequestHandler<SignupCommand, LoginResponse>
 {
     private readonly IIdentityDbContext _context;
@@ -91,15 +91,32 @@ public class SignupCommandHandler : IRequestHandler<SignupCommand, LoginResponse
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             ExpiresAt = DateTime.UtcNow.AddHours(1),
-            User = new UserDto
+            User = new UserDto()
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt ?? DateTime.UtcNow,
+                RefreshTokens = user.RefreshTokens
             }
         };
     }
 }
+
+//public class SignupCommand : IRequest<LoginResponse>, IBaseRequest
+//{
+//  public string UserName { get; set; }
+//  public string Email { get; set; }
+//  public string PhoneNumber { get; set; }
+//  public string Password { get; set; }
+//  public string FirstName { get; set; }
+//  public string LastName { get; set; }
+//  public bool Gender { get; set; }
+//}
+}
+
+
 

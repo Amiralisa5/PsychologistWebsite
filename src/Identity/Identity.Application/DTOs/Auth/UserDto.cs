@@ -1,3 +1,5 @@
+using Identity.Domain.Entities;
+
 namespace Identity.Application.DTOs.Auth;
 
 public class UserDto
@@ -8,8 +10,24 @@ public class UserDto
     public string PhoneNumber { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public Gender Gender { get; set; }
+    public bool Gender { get; set; }
     public bool IsEmailConfirmed { get; set; }
     public bool IsPhoneNumberConfirmed { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; } 
+
+    //public UserDto(DateTime updatedAt)
+    //{
+    //    UpdatedAt = updatedAt;
+    //}
+
+    public bool IsActive { get; set; }
+    public RefreshToken RefreshToken { get; set; }
+    public object RefreshTokens { get; internal set; }
+
+    public static implicit operator UserDto(Features.Auth.Commands.Login.UserDto v)
+    {
+        throw new NotImplementedException();
+    }
 }
 

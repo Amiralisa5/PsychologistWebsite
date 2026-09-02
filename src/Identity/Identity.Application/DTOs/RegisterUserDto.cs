@@ -7,6 +7,6 @@ public record RegisterUserDto(
     string Password,
     string FirstName,
     string LastName,
-    Gender Gender
+    bool Gender
 );
 

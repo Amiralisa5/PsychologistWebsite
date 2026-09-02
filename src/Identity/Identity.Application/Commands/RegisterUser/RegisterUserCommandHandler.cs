@@ -1,7 +1,7 @@
-using Identity.Application.Abstractions;
+using Identity.Application.Common.Interfaces;
 using Identity.Application.DTOs;
 using Identity.Domain.Entities;
-using Identity.Domain.ValueObjects;
+using Identity.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, A
     {
         // Check if email already exists
         var emailExists = await _context.Users
-            .AnyAsync(u => u.Email.Value == request.Email.ToLowerInvariant(), cancellationToken);
+            .AnyAsync(u => u.Email == request.Email.ToLowerInvariant(), cancellationToken);
 
         if (emailExists)
         {
@@ -51,15 +51,15 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, A
         }
 
         // Create user
-        var email = Email.Create(request.Email);
-        var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
+       // var email = Email.Create(request.Email);
+       // var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
         var passwordHash = _passwordHasher.HashPassword(request.Password);
 
         var user = new User
         {
             UserName = request.UserName,
-            Email = email,
-            PhoneNumber = phoneNumber,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
             PasswordHash = passwordHash,
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -75,8 +75,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, A
         return new AuthResponseDto(
             Token: token,
             UserName: user.UserName,
-            Email: user.Email.Value,
-            PhoneNumber: user.PhoneNumber.Value,
+            Email: user.Email,
+            PhoneNumber: user.PhoneNumber,
             FirstName: user.FirstName,
             LastName: user.LastName
         );

@@ -1,4 +1,4 @@
-using Identity.Application.Abstractions;
+using Identity.Application.Common.Interfaces;
 using Identity.Application.DTOs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,17 +24,17 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.Value == request.Email.ToLowerInvariant(), cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == request.Email.ToLowerInvariant(), cancellationToken);
 
         if (user == null || !user.IsActive)
         {
             throw new UnauthorizedAccessException("Invalid email or password");
         }
-        if (user.PhoneNumber.Value == request.PhoneNumber)
+        if (user.PhoneNumber == request.PhoneNumber)
         {
             throw new UnauthorizedAccessException("Invalid phone number or password");
         }
-        if (user.UserName == request.UserName)
+        if (user.UserName != request.UserName)
         {
             throw new UnauthorizedAccessException("Invalid username or password");
         }
@@ -48,8 +48,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         return new AuthResponseDto(
             Token: token,
             UserName: user.UserName,
-            Email: user.Email.Value,
-            PhoneNumber: user.PhoneNumber.Value,
+            Email: user.Email,
+            PhoneNumber: user.PhoneNumber,
             FirstName: user.FirstName,
             LastName: user.LastName
         );

@@ -36,7 +36,7 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, U
             IsEmailConfirmed = user.IsEmailConfirmed,
             IsPhoneNumberConfirmed = user.IsPhoneNumberConfirmed,
             CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt,
+            UpdatedAt = user.UpdatedAt ?? DateTime.UtcNow,
             IsActive = user.IsActive
         };
     }

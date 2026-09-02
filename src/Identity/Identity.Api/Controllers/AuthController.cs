@@ -7,9 +7,11 @@ using Identity.Application.Features.Auth.Commands.Signup;
 using Identity.Application.Features.Auth.Queries.GetCurrentUser;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UserDto = Identity.Application.DTOs.Auth.UserDto;
 
 namespace Identity.Api.Controllers;
 

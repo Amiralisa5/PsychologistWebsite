@@ -23,9 +23,15 @@ public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordComm
 
         RuleFor(x => x.NewPassword)
             .NotEmpty().WithMessage("New password is required")
-            .NotEqual(x => x.Email or x.PhoneNumber or x.UserName or x.FirstName or x.LastName or "123456" or).WithMessage("Password cannot be the same as email, phone number, username, first name or last name or 123456 or password");
             .MinimumLength(6).WithMessage("Password must be at least 6 characters")
-            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Password must contain at least one uppercase letter, one lowercase letter, and one number");
+            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Password must contain at least one uppercase letter, one lowercase letter, and one number")
+            .Must((command, newPassword) =>
+                !string.Equals(newPassword, command.Email, System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(newPassword, command.PhoneNumber, System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(newPassword, command.UserName, System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(newPassword, "123456", System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(newPassword, "password", System.StringComparison.OrdinalIgnoreCase)
+            ).WithMessage("Password cannot be the same as email, phone number, username, '123456', or 'password'");
     }
 }
 

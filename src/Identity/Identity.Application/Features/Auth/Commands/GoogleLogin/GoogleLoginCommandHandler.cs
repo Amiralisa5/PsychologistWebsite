@@ -78,7 +78,10 @@ public class GoogleLoginCommandHandler : IRequestHandler<GoogleLoginCommand, Log
                 UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedAt = user.CreatedAt,
+                IsActive = user.IsActive,
             }
         };
     }

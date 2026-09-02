@@ -1,3 +1,4 @@
+using System.Linq;
 using FluentValidation;
 
 namespace Identity.Application.Features.Auth.Commands.Login;
@@ -18,8 +19,14 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
             .NotEmpty().WithMessage("Password is required")
             .MinimumLength(6).WithMessage("Password must be at least 6 characters")
             .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Password must contain at least one uppercase letter, one lowercase letter, and one number")
-            .NotEqual(x => x.Email or x.PhoneNumber or x.UserName or x.FirstName or x.LastName or "123456").WithMessage("Password cannot be the same as email, phone number, username, first name or last name or 123456");
-            
+            .Must((command, password) =>
+            {
+                if (string.IsNullOrEmpty(password)) return true; // other rules handle emptiness
+                var forbidden = new[] { command?.Email, command?.PhoneNumber, command?.UserName, "123456" };
+                return !forbidden.Any(f => !string.IsNullOrEmpty(f) && f == password);
+            })
+            .WithMessage("Password cannot be the same as email, phone number, username, or 123456");
+
         RuleFor(x => x.UserName)
             .NotEmpty().WithMessage("Username is required")
             .MinimumLength(3).WithMessage("Username must be at least 3 characters");
