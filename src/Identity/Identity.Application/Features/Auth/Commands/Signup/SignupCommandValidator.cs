@@ -26,13 +26,6 @@ public class SignupCommandValidator : AbstractValidator<SignupCommand>
         RuleFor(x => x.Gender)
             .NotEmpty().WithMessage("Gender is required");
 
-        RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Password is required")
-            .MinimumLength(6).WithMessage("Password must be at least 6 characters")
-            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Password must contain at least one uppercase letter, one lowercase letter, and one number");
-            .NotEqual(x => x.Email or x.PhoneNumber or x.UserName or x.FirstName or x.LastName or "123456").WithMessage("Password cannot be the same as email, phone number, username, first name or last name or 123456");
-            .NotEqual(x => x.Password).WithMessage("Password cannot be the same as password");
-            
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("First name is required");
 
@@ -40,4 +33,3 @@ public class SignupCommandValidator : AbstractValidator<SignupCommand>
             .NotEmpty().WithMessage("Last name is required");
     }
 }
-
