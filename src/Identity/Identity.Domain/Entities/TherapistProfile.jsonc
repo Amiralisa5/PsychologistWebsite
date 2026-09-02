@@ -1,0 +1,59 @@
+{
+  "name": "TherapistProfile",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Therapist's full name"
+    },
+    "title": {
+      "type": "string",
+      "description": "Professional title or role, e.g. Clinical Therapist"
+    },
+    "specializations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Areas of specialization, e.g. Anxiety, Trauma, Grief"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Short biography describing the therapist's background and approach"
+    },
+    "photo": {
+      "type": "string",
+      "description": "URL to therapist's profile photo"
+    },
+    "credentials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Professional credentials and certifications, e.g. RP, MSW, RSW"
+    },
+    "years_experience": {
+      "type": "number",
+      "description": "Years of professional experience"
+    },
+    "email": {
+      "type": "string",
+      "description": "Contact email for the therapist"
+    },
+    "display_order": {
+      "type": "number",
+      "default": 0,
+      "description": "Order in which the therapist appears on the services page (lower first)"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the therapist profile is published"
+    }
+  },
+  "required": [
+    "name",
+    "title",
+    "bio"
+  ]
+}
