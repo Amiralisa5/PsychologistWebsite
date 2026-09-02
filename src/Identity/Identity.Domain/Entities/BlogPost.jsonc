@@ -1,0 +1,52 @@
+{
+  "name": "BlogPost",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Blog post title"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "Short description of the blog post"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full blog post content in markdown"
+    },
+    "featured_image": {
+      "type": "string",
+      "description": "URL to featured image"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Mental Health",
+        "Nutrition",
+        "Lifestyle",
+        "Workplace Wellness",
+        "Self Care"
+      ],
+      "description": "Blog post category"
+    },
+    "read_time": {
+      "type": "number",
+      "description": "Estimated read time in minutes"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the post is published"
+    }
+  },
+  "required": [
+    "title",
+    "slug",
+    "content",
+    "category"
+  ]
+}
