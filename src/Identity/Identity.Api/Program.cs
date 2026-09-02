@@ -1,9 +1,7 @@
 using Identity.Application;
 using Identity.Infrastructure;
 using Identity.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -115,7 +113,7 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

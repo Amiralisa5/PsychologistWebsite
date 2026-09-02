@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "src\\Identity\\Identity.Domain\\Identity.Domain.csproj",
+        "Action": "Start",
+        "DebugTarget": "Identity.Domain"
+      },
+      {
+        "Path": "src\\Identity\\Identity.Application\\Identity.Application.csproj",
+        "Action": "Start",
+        "DebugTarget": "Identity.Application"
+      },
+      {
+        "Path": "src\\Identity\\Identity.Infrastructure\\Identity.Infrastructure.csproj",
+        "Action": "Start",
+        "DebugTarget": "Identity.Infrastructure"
+      },
+      {
+        "Path": "src\\Identity\\Identity.Api\\Identity.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "IIS Express"
+      }
+    ]
+  }
+]
