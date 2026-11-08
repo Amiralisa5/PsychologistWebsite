@@ -15,9 +15,27 @@
       <div class="contact-card">
         <h4>{{ t.contact_info_title }}</h4>
         <ul>
-          <li>📞 <strong>{% if t.lang_code == 'fa' %}شماره مستقیم:{% else %}Direct Phone:{% endif %}</strong> <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></li>
+          <li>📞 <strong>{% if t.lang_code == 'fa' %}شماره مستقیم / واتساپ:{% else %}Direct Phone / WhatsApp:{% endif %}</strong> <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></li>
           <li>✉️ <strong>{% if t.lang_code == 'fa' %}ایمیل مطب:{% else %}Office Email:{% endif %}</strong> <a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
           <li>📍 <strong>{% if t.lang_code == 'fa' %}نشانی حضوری:{% else %}In-Person Address:{% endif %}</strong> {% if t.lang_code == 'fa' %}{{ profile.address_fa }}{% else %}{{ profile.address_en }}{% endif %}</li>
+        </ul>
+      </div>
+
+      <div class="contact-card" style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
+        <h4 style="color: #166534;">{{ t.social_media_title }}</h4>
+        <ul style="gap: 0.75rem;">
+          <li>
+            ✈️ <strong>{% if t.lang_code == 'fa' %}کانال و گروه تلگرام:{% else %}Telegram Community:{% endif %}</strong>
+            <a href="https://t.me/dasein_journal" target="_blank" rel="noopener" style="color: #0284c7; font-weight: 600; text-decoration: underline;">
+              @dasein_journal
+            </a>
+          </li>
+          <li>
+            📸 <strong>{% if t.lang_code == 'fa' %}صفحه اینستاگرام:{% else %}Instagram Page:{% endif %}</strong>
+            <a href="https://instagram.com/dasein.journal" target="_blank" rel="noopener" style="color: #e11d48; font-weight: 600; text-decoration: underline;">
+              dasein.journal
+            </a>
+          </li>
         </ul>
       </div>
 

@@ -222,6 +222,8 @@ def update_profile_action(
     bio_fa: str = Form(...),
     email: str = Form(...),
     phone: str = Form(...),
+    telegram_url: str = Form("https://t.me/dasein_journal"),
+    instagram_url: str = Form("https://instagram.com/dasein.journal"),
     address_en: str = Form(...),
     address_fa: str = Form(...),
     credentials_en: str = Form(""),
@@ -249,6 +251,8 @@ def update_profile_action(
     profile.bio_fa = bio_fa.strip()
     profile.email = email.strip()
     profile.phone = phone.strip()
+    profile.telegram_url = telegram_url.strip()
+    profile.instagram_url = instagram_url.strip()
     profile.address_en = address_en.strip()
     profile.address_fa = address_fa.strip()
 

@@ -19,8 +19,8 @@ class TherapistProfile(Base):
     __tablename__ = "therapist_profiles"
 
     id = Column(Integer, primary_key=True, index=True)
-    name_en = Column(String(200), default="Dr. Amir Ali Fathi")
-    name_fa = Column(String(200), default="دکتر امیرعلی فتحی")
+    name_en = Column(String(200), default="Dr. Hassan Agha Nasiri")
+    name_fa = Column(String(200), default="دکتر حسن آقانصیری")
     title_en = Column(String(200), default="Licensed Clinical Psychologist & Psychotherapist")
     title_fa = Column(String(200), default="روانشناس بالینی و روان‌درمانگر رسمی")
     
@@ -34,11 +34,13 @@ class TherapistProfile(Base):
     credentials_fa_json = Column(Text, default="[]")
     
     years_experience = Column(Integer, default=12)
-    email = Column(String(150), default="contact@fathitherapy.com")
-    phone = Column(String(50), default="+98 21 8877 6655")
+    email = Column(String(150), default="contact@daseinjournal.com")
+    phone = Column(String(50), default="+989125197973")
+    telegram_url = Column(String(200), default="https://t.me/dasein_journal")
+    instagram_url = Column(String(200), default="https://instagram.com/dasein.journal")
     address_en = Column(String(300), default="Suite 402, North Kargar Ave, Tehran / Online Worldwide")
     address_fa = Column(String(300), default="تهران، خیابان کارگر شمالی، ساختمان پزشکان، واحد ۴۰۲ / جلسات آنلاین بین‌المللی")
-    photo_url = Column(String(300), default="/static/images/dr-fathi.svg")
+    photo_url = Column(String(300), default="/static/images/dr-hassan-aghanasiri.jpg")
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     @property

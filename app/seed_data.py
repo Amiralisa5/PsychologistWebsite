@@ -26,63 +26,65 @@ def seed_database():
         # 2. Therapist Profile
         profile = db.query(TherapistProfile).first()
         if not profile:
-            profile = TherapistProfile(
-                name_en="Dr. Amir Ali Fathi",
-                name_fa="دکتر امیرعلی فتحی",
-                title_en="Licensed Clinical Psychologist & Psychotherapist (PhD)",
-                title_fa="دکترای تخصصی روانشناسی بالینی و روان‌درمانگر رسمی",
-                bio_en=(
-                    "Dr. Amir Ali Fathi is a licensed clinical psychologist and psychotherapist with over 12 years of clinical "
-                    "experience helping individuals and couples navigate emotional distress, anxiety disorders, and interpersonal "
-                    "challenges. Drawing on Cognitive Behavioral Therapy (CBT), Psychodynamic Psychotherapy, and Acceptance & "
-                    "Commitment Therapy (ACT), Dr. Fathi creates a warm, collaborative, and evidence-informed therapeutic space "
-                    "that respects each client's unique life context and cultural background."
-                ),
-                bio_fa=(
-                    "دکتر امیرعلی فتحی، روانشناس بالینی و عضو سازمان نظام روانشناسی و مشاوره، دارای بیش از ۱۲ سال تجربه بالینی در "
-                    "زمینه درمان اختلالات اضطرابی، افسردگی، بهبود روابط زوجین و بحران‌های فردی است. رویکرد درمانی ایشان مبتنی بر "
-                    "درمان‌های شناختی‌رفتاری (CBT)، روان‌درمانی تحلیلی و درمان مبتنی بر پذیرش و تعهد (ACT) است. جلسات درمانی با تکیه بر "
-                    "همدلی عمیق، رازداری و پروتکل‌های علمی روز، فضایی امن برای شناخت خود و التیام دردهای درونی فراهم می‌سازد."
-                ),
-                specializations_en_json=json.dumps([
-                    "Anxiety & Panic Disorders",
-                    "Depression & Mood Regulation",
-                    "Couples & Marital Counseling",
-                    "Trauma & EMDR / Grief Processing",
-                    "Life Transitions & Identity Crisis",
-                    "Mindfulness & Stress Resilience"
-                ], ensure_ascii=False),
-                specializations_fa_json=json.dumps([
-                    "درمان اضطراب، وسواس و حملات پانیک",
-                    "افسردگی و تنظیم هیجانات",
-                    "زوج‌درمانی و بهبود صمیمیت عاطفی",
-                    "درمان تروما، سوگ و آسیب‌های دلبستگی",
-                    "بحران‌های هویتی و مدیریت تغییرات زندگی",
-                    "ذهن‌آگاهی، خودشفقت‌ورزی و تاب‌آوری"
-                ], ensure_ascii=False),
-                credentials_en_json=json.dumps([
-                    "Ph.D. in Clinical Psychology",
-                    "Licensed Clinical Psychologist (Reg #18420)",
-                    "Certified CBT & ACT Therapist",
-                    "Member of International Association for Relational Psychoanalysis",
-                    "Over 12 Years of Clinical Practice"
-                ], ensure_ascii=False),
-                credentials_fa_json=json.dumps([
-                    "دکترای تخصصی روانشناسی بالینی",
-                    "عضو رسمی سازمان نظام روانشناسی و مشاوره ایران (شماره پروانه: ۱۸۴۲۰)",
-                    "گواهینامه تخصصی روان‌درمانی شناختی-رفتاری و ACT",
-                    "عضو انجمن علمی روانشناسی بالینی",
-                    "بیش از ۱۲ سال سابقه درمان و پژوهش بالینی"
-                ], ensure_ascii=False),
-                years_experience=12,
-                email="contact@fathitherapy.com",
-                phone="+98 21 8877 6655",
-                address_en="Suite 402, North Kargar Ave, Tehran / Online Worldwide via Zoom & Google Meet",
-                address_fa="تهران، خیابان کارگر شمالی، نبش کوچه یازدهم، ساختمان پزشکان، طبقه ۴، واحد ۴۰۲ / جلسات آنلاین در سراسر دنیا",
-                photo_url="/static/images/dr-fathi.svg"
-            )
+            profile = TherapistProfile()
             db.add(profile)
-            print("Created default therapist profile for Dr. Fathi")
+
+        profile.name_en = "Dr. Hassan Agha Nasiri"
+        profile.name_fa = "دکتر حسن آقانصیری"
+        profile.title_en = "Licensed Clinical Psychologist & Existential Psychotherapist (PhD)"
+        profile.title_fa = "دکترای تخصصی روانشناسی بالینی و روان‌درمانگر اگزیستانسیال"
+        profile.bio_en = (
+            "Dr. Hassan Agha Nasiri is a licensed clinical psychologist, researcher, and existential psychotherapist "
+            "with over 12 years of clinical experience. Founder of Dasein Journal, Dr. Agha Nasiri integrates "
+            "Existential Psychotherapy, Cognitive Behavioral Therapy (CBT), and Acceptance & Commitment Therapy (ACT) "
+            "to guide clients through emotional suffering, identity crises, anxiety, and the search for authentic meaning."
+        )
+        profile.bio_fa = (
+            "دکتر حسن آقانصیری، روانشناس بالینی، پژوهشگر و روان‌درمانگر اگزیستانسیال، با بیش از ۱۲ سال تجربه بالینی و بنیان‌گذار "
+            "ژورنال دازاین (Dasein Journal). رویکرد درمانی ایشان تلفیقی از روان‌درمانی اگزیستانسیال، درمان شناختی‌رفتاری (CBT) و "
+            "پذیرش و تعهد (ACT) است که فضایی ژرف، امن و همدلانه برای رویارویی با تعارضات وجودی، درمان اضطراب و بازیافتن معنای اصیل زیستن فراهم می‌آورد."
+        )
+        profile.specializations_en_json = json.dumps([
+            "Existential & Meaning-Centered Therapy",
+            "Anxiety, Panic & Existential Dread",
+            "Depression & Emotional Numbness",
+            "Couples & Intimate Relational Healing",
+            "Trauma, Grief & Loss Processing",
+            "Identity, Life Transitions & Authenticity"
+        ], ensure_ascii=False)
+        profile.specializations_fa_json = json.dumps([
+            "روان‌درمانی اگزیستانسیال و معنادرمانی",
+            "درمان اضطراب، وسواس و بحران‌های وجودی",
+            "افسردگی و بازیابی سرزندگی روانی",
+            "زوج‌درمانی و بهبود صمیمیت عاطفی",
+            "درمان تروما، سوگ و بحران فقدان",
+            "بحران‌های هویتی و اصالت فردی"
+        ], ensure_ascii=False)
+        profile.credentials_en_json = json.dumps([
+            "Ph.D. in Clinical Psychology",
+            "Licensed Clinical Psychologist (Reg #18420)",
+            "Founder & Editor of Dasein Journal",
+            "Certified CBT, ACT & Existential Psychotherapist",
+            "Member of International Association for Relational Psychoanalysis",
+            "Over 12 Years of Clinical & Academic Practice"
+        ], ensure_ascii=False)
+        profile.credentials_fa_json = json.dumps([
+            "دکترای تخصصی روانشناسی بالینی",
+            "عضو رسمی سازمان نظام روانشناسی و مشاوره ایران (شماره پروانه: ۱۸۴۲۰)",
+            "بنیان‌گذار و مدیر علمی ژورنال دازاین (Dasein Journal)",
+            "گواهینامه تخصصی روان‌درمانی اگزیستانسیال و شناختی-رفتاری",
+            "عضو انجمن علمی روانشناسی بالینی",
+            "بیش از ۱۲ سال سابقه درمان و پژوهش بالینی"
+        ], ensure_ascii=False)
+        profile.years_experience = 12
+        profile.email = "contact@daseinjournal.com"
+        profile.phone = "+989125197973"
+        profile.telegram_url = "https://t.me/dasein_journal"
+        profile.instagram_url = "https://instagram.com/dasein.journal"
+        profile.address_en = "Suite 402, North Kargar Ave, Tehran / Online Worldwide via Zoom & Google Meet"
+        profile.address_fa = "تهران، خیابان کارگر شمالی، نبش کوچه یازدهم، ساختمان پزشکان، طبقه ۴، واحد ۴۰۲ / جلسات آنلاین در سراسر دنیا"
+        profile.photo_url = "/static/images/dr-hassan-aghanasiri.jpg"
+        print("Configured therapist profile for Dr. Hassan Agha Nasiri (Dasein Journal)")
 
         # 3. Initial Articles (Bilingual)
         if db.query(Article).count() == 0:

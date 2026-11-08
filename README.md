@@ -1,7 +1,16 @@
-# 🌿 Psychologist & Psychotherapist Web Application
-### وب‌سایت تخصصی روان‌درمانی و مشاوره با پنل اختصاصی مدیریت
+# 🌿 Dasein Journal — Dr. Hassan Agha Nasiri
+### ژورنال دازاین | وب‌سایت تخصصی روان‌درمانی اگزیستانسیال و بالینی دکتر حسن آقانصیری
 
-A modern, compassionate, and production-ready **bilingual (English & Persian / فارسی)** web application designed for a licensed clinical psychologist and psychotherapist practice.
+A modern, compassionate, and production-ready **bilingual (English & Persian / فارسی)** web application designed for **Dasein Journal** and the clinical psychology practice of **Dr. Hassan Agha Nasiri (دکتر حسن آقانصیری)**.
+
+---
+
+## 📱 Contact & Community
+
+- **Phone / WhatsApp**: [+98 912 519 7973](tel:+989125197973)
+- **Telegram Group**: [@dasein_journal](https://t.me/dasein_journal)
+- **Instagram Page**: [@dasein.journal](https://instagram.com/dasein.journal)
+- **Email**: contact@daseinjournal.com
 
 ---
 
@@ -10,15 +19,15 @@ A modern, compassionate, and production-ready **bilingual (English & Persian / �
 ### 1. 🌐 Public Bilingual Website (LTR & RTL)
 - **Instant Language Toggle**: Seamlessly switch between **English (LTR)** and **فارسی (RTL)** with persistent language preferences.
 - **Hero & Trust Section**: Warm, calming aesthetic with clinical experience metrics (12+ years, 4,800+ hours, certified confidentiality).
-- **Therapist Profile & About**: Comprehensive background for **Dr. Amir Ali Fathi** (دکتر امیرعلی فتحی), clinical credentials, degrees, and therapeutic philosophy.
+- **Therapist Profile & About**: Comprehensive background for **Dr. Hassan Agha Nasiri** (دکتر حسن آقانصیری), clinical credentials, degrees, and existential therapeutic philosophy.
 - **Specialties & Clinical Approaches**: Dedicated showcases for:
-  - Anxiety, Panic & Stress Management (CBT & Somatics)
-  - Depression & Mood Regulation (Behavioral Activation)
-  - Couples & Relationship Therapy (Emotionally Focused Therapy - EFT)
+  - Anxiety, Panic & Existential Dread (CBT & Somatics)
+  - Depression & Emotional Regulation
+  - Couples & Relationship Healing (Emotionally Focused Therapy - EFT)
   - Trauma & EMDR / Grief Processing
-  - Life Transitions & Identity Crisis
-  - Mindfulness & Self-Compassion (MBSR)
-- **Mental Health Blog & Resources**: Clinical guides and self-help articles with category filtering, reading time estimates, and full markdown rendering.
+  - Life Transitions & Identity Authenticity
+  - Mindfulness & Existential Psychotherapy
+- **Mental Health Blog & Resources**: Clinical guides and existential reflections with category filtering, reading time estimates, and full markdown rendering.
 - **Interactive Consultation Booking**: AJAX consultation scheduling with instant validation, date/time preference, session format (Online / In-Person), and bilingual feedback.
 - **Emergency Crisis Guidance**: Direct hotline numbers (123 / 1480 in Iran, 988 / 911 international).
 
@@ -35,7 +44,7 @@ A modern, compassionate, and production-ready **bilingual (English & Persian / �
   - Toggle published/draft status.
   - Delete articles with instant confirmation.
 - **Live Therapist Profile Editor**:
-  - Update personal names, credentials, clinical bio, phone, email, and addresses in both languages without changing code.
+  - Update personal names, credentials, clinical bio, phone, email, telegram, instagram, and addresses in both languages without changing code.
 
 ---
 
