@@ -63,22 +63,13 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
                 PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Gender = user.Gender
+                Gender = user.Gender,
                 IsEmailConfirmed = user.IsEmailConfirmed,
                 IsPhoneNumberConfirmed = user.IsPhoneNumberConfirmed,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
                 IsActive = user.IsActive
-                RefreshTokens = user.RefreshTokens.Select(rt => new RefreshTokenDto
-                {
-                    Id = rt.Id,
-                    Token = rt.Token,
-                    ExpiresAt = rt.ExpiresAt,
-                    CreatedAt = rt.CreatedAt,
-                    IsRevoked = rt.IsRevoked
-                }).ToList()
             }
         };
     }
 }
-

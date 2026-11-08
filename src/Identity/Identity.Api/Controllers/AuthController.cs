@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
 
 namespace Identity.Api.Controllers;
@@ -220,4 +221,3 @@ public class AuthController : ControllerBase
         }
     }
 }
-

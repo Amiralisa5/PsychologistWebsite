@@ -1,3 +1,5 @@
+using Identity.Domain.Entities;
+
 namespace Identity.Application.DTOs.Auth;
 
 public class SignupRequest
@@ -10,4 +12,3 @@ public class SignupRequest
     public string LastName { get; set; } = string.Empty;
     public Gender Gender { get; set; }
 }
-

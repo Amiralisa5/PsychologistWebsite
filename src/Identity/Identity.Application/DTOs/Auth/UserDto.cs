@@ -1,3 +1,5 @@
+using Identity.Domain.Entities;
+
 namespace Identity.Application.DTOs.Auth;
 
 public class UserDto
@@ -11,5 +13,7 @@ public class UserDto
     public Gender Gender { get; set; }
     public bool IsEmailConfirmed { get; set; }
     public bool IsPhoneNumberConfirmed { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public bool IsActive { get; set; }
 }
-

@@ -1,3 +1,5 @@
+using Identity.Domain.Entities;
+
 namespace Identity.Application.DTOs;
 
 public record RegisterUserDto(
@@ -9,4 +11,3 @@ public record RegisterUserDto(
     string LastName,
     Gender Gender
 );
-
