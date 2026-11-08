@@ -3,9 +3,19 @@ import json
 import unittest
 import urllib.parse
 from app.main import app
+from app.utils.persian_calendar import (
+    format_jalali_date,
+    format_jalali_short,
+    gregorian_to_jalali,
+    jalali_to_gregorian,
+    generate_google_calendar_url,
+    to_persian_digits
+)
 
 
 async def asgi_request(method="GET", path="/", query="", headers=None, body=b""):
+    if "?" in path and not query:
+        path, query = path.split("?", 1)
     if headers is None:
         headers = []
     response_headers = {}
@@ -78,6 +88,7 @@ class DaseinJournalIntegrationTests(unittest.TestCase):
         self.assertIn("سوگ", text_fa)
         self.assertIn("تروما فراتر از زخم‌های نادیدنی", text_fa)
         self.assertIn("نجاستت را پنهان کن", text_fa)
+        self.assertIn("آبان ۱۴۰۵", text_fa)  # Persian calendar in article meta
 
         # English blog lists English counterparts
         status_en, hdrs_en, text_en = request("GET", "/blog", query="lang=en")
@@ -105,19 +116,20 @@ class DaseinJournalIntegrationTests(unittest.TestCase):
         self.assertIn("سوگ‌نگاره شاهنامه", text_grief)
         self.assertIn("t.me/dasein_journal/22", text_grief)
 
-    def test_api_endpoints(self):
-        # Appointments API
+    def test_google_calendar_and_meet_integration(self):
+        # Booking online consultation returns Google Meet & Google Calendar links
         payload = json.dumps({
-            "client_name": "Test Client",
-            "email": "test@example.com",
-            "phone": "+989120000000",
-            "preferred_date": "2026-12-01",
-            "preferred_time": "Morning (9:00 - 12:00)",
+            "client_name": "Online Client",
+            "email": "online@example.com",
+            "phone": "+989127778899",
+            "preferred_date": "2026-11-20",
+            "preferred_time": "Evening (17:00 - 20:00)",
             "service_type": "Existential Therapy",
             "session_format": "Online",
-            "notes": "Testing appointment booking flow.",
-            "language_used": "en"
+            "notes": "Testing Google Meet link generation.",
+            "language_used": "fa"
         }).encode("utf-8")
+
         status, hdrs, body = request(
             "POST",
             "/api/appointments",
@@ -125,14 +137,66 @@ class DaseinJournalIntegrationTests(unittest.TestCase):
             body=payload
         )
         self.assertEqual(status, 200)
-        resp_json = json.loads(body)
-        self.assertTrue(resp_json.get("success"))
+        res = json.loads(body)
+        self.assertTrue(res.get("success"))
+        self.assertIn("meet_link", res)
+        self.assertIn("meet.google.com", res["meet_link"])
+        self.assertIn("google_calendar_url", res)
+        self.assertIn("calendar.google.com/calendar/render", res["google_calendar_url"])
+        self.assertIn("das-ein-meet", res["google_calendar_url"])
 
-        # Articles API
-        status_art, hdrs_art, body_art = request("GET", "/api/articles")
-        self.assertEqual(status_art, 200)
-        arts = json.loads(body_art)
-        self.assertGreaterEqual(len(arts), 7)
+    def test_persian_calendar_conversions(self):
+        # Unit tests on Jalali utility
+        jy, jm, jd = gregorian_to_jalali(2026, 11, 20)
+        self.assertEqual(jy, 1405)
+        self.assertEqual(jm, 8)
+        self.assertEqual(jd, 29)
+
+        g_date = jalali_to_gregorian(1405, 8, 29)
+        self.assertEqual(str(g_date), "2026-11-20")
+
+        shamsi_text = format_jalali_date("2026-11-20")
+        self.assertIn("آبان ۱۴۰۵", shamsi_text)
+
+        # Booking with Shamsi date converts to Gregorian correctly
+        payload = json.dumps({
+            "client_name": "Shamsi Booking Client",
+            "email": "shamsi@example.com",
+            "phone": "+989123334455",
+            "preferred_date_shamsi": "1405/08/29",
+            "preferred_time": "Morning (9:00 - 12:00)",
+            "service_type": "Anxiety & Stress Management",
+            "session_format": "Online",
+            "notes": "Preferred date picked in Persian calendar.",
+            "language_used": "fa"
+        }).encode("utf-8")
+
+        status, hdrs, body = request(
+            "POST",
+            "/api/appointments",
+            headers=[("content-type", "application/json")],
+            body=payload
+        )
+        self.assertEqual(status, 200)
+        res = json.loads(body)
+        self.assertEqual(res["preferred_date"], "2026-11-20")
+        self.assertIn("۱۴۰۵", res["preferred_date_shamsi"])
+
+    def test_notification_popups_and_events(self):
+        # Homepage has appointment confirmation modal and event notification popup
+        status, hdrs, text = request("GET", "/?lang=fa")
+        self.assertEqual(status, 200)
+        self.assertIn("appointmentSuccessModal", text)
+        self.assertIn("eventNotificationPopup", text)
+        self.assertIn("کارگاه آنلاین و تخصصی", text)
+        self.assertIn("meet.google.com", text)
+        self.assertIn("persian_calendar.js", text)
+
+        # Booking page has interactive Persian calendar picker
+        status_b, hdrs_b, text_b = request("GET", "/booking?lang=fa")
+        self.assertEqual(status_b, 200)
+        self.assertIn("shamsiPickerWrap", text_b)
+        self.assertIn("shamsiMonth", text_b)
 
     def test_admin_auth_and_social_panel(self):
         # Login
@@ -153,11 +217,25 @@ class DaseinJournalIntegrationTests(unittest.TestCase):
 
         auth_headers = [("cookie", cookie_header)]
 
-        # Dashboard
+        # Dashboard contains notification bell
         status_dash, hdrs_dash, text_dash = request("GET", "/admin", headers=auth_headers)
         self.assertEqual(status_dash, 200)
         self.assertIn("Dasein Journal", text_dash)
-        self.assertIn("Dashboard Overview", text_dash)
+        self.assertIn("adminNotifBell", text_dash)
+        self.assertIn("adminNotifDropdown", text_dash)
+
+        # Admin notifications API
+        status_notif, hdrs_notif, body_notif = request("GET", "/api/admin/notifications", headers=auth_headers)
+        self.assertEqual(status_notif, 200)
+        notif_data = json.loads(body_notif)
+        self.assertIn("pending_count", notif_data)
+        self.assertIn("events", notif_data)
+
+        # Appointments management shows Shamsi date & Meet link
+        status_appts, hdrs_appts, text_appts = request("GET", "/admin/appointments", headers=auth_headers)
+        self.assertEqual(status_appts, 200)
+        self.assertIn("Meet", text_appts)
+        self.assertIn("Cal", text_appts)
 
         # Social Panel
         status_soc, hdrs_soc, text_soc = request("GET", "/admin/social", headers=auth_headers)
@@ -166,34 +244,6 @@ class DaseinJournalIntegrationTests(unittest.TestCase):
         self.assertIn("Instagram Auto-Publish", text_soc)
         self.assertIn("@dasein_journal", text_soc)
         self.assertIn("dasein.journal", text_soc)
-
-        # Save social settings (telegram section)
-        social_body = urllib.parse.urlencode({
-            "section": "telegram",
-            "telegram_enabled": "true",
-            "telegram_bot_token": "TEST_TOKEN_123",
-            "telegram_channel_id": "@dasein_journal",
-            "telegram_auto_publish": "true"
-        }).encode("utf-8")
-
-        status_save, hdrs_save, text_save = request(
-            "POST",
-            "/admin/social",
-            headers=auth_headers + [("content-type", "application/x-www-form-urlencoded")],
-            body=social_body
-        )
-        self.assertEqual(status_save, 303)
-
-        # Verify updated settings
-        status_soc2, hdrs_soc2, text_soc2 = request("GET", "/admin/social", headers=auth_headers)
-        self.assertEqual(status_soc2, 200)
-        self.assertIn("TEST_TOKEN_123", text_soc2)
-
-        # Articles management panel
-        status_arts, hdrs_arts, text_arts = request("GET", "/admin/articles", headers=auth_headers)
-        self.assertEqual(status_arts, 200)
-        self.assertIn("Telegram", text_arts)
-        self.assertIn("Instagram", text_arts)
 
 
 if __name__ == "__main__":

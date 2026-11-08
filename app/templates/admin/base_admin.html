@@ -76,6 +76,28 @@
           </h2>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
+          <!-- Notification Bell & Pop-up -->
+          <div class="notif-container">
+            <button type="button" class="notif-bell-btn" id="adminNotifBell" title="Consultations &amp; Events Notifications" aria-label="Notifications">
+              🔔
+              <span id="notifBadgePill" class="notif-badge-pill" style="display: none;">0</span>
+            </button>
+            <div id="adminNotifDropdown" class="notif-dropdown">
+              <div class="notif-dropdown-header">
+                <span>🔔 Consultation Requests &amp; Events</span>
+                <span id="notifPendingHeader" style="font-size: 0.78rem; color: #ef4444; font-weight: 700;"></span>
+              </div>
+              <div id="notifListContainer" style="max-height: 340px; overflow-y: auto;">
+                <div style="padding: 1.5rem; text-align: center; color: #94a3b8; font-size: 0.85rem;">
+                  Checking for new consultation requests...
+                </div>
+              </div>
+              <div style="padding: 0.6rem 1rem; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center;">
+                <a href="/admin/appointments" style="color: var(--primary); font-size: 0.82rem; font-weight: 600;">View All Consultation Requests →</a>
+              </div>
+            </div>
+          </div>
+
           <span style="font-size: 0.88rem; color: var(--text-muted);">
             Logged in as <strong>{{ user.username }}</strong>
           </span>

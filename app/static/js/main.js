@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         service_type: formData.get("service_type"),
         session_format: formData.get("session_format"),
         preferred_date: formData.get("preferred_date") || "",
+        preferred_date_shamsi: formData.get("preferred_date_shamsi") || "",
         preferred_time: formData.get("preferred_time") || "",
         notes: formData.get("notes") || "",
         language_used: document.documentElement.lang || "en"
@@ -73,6 +74,10 @@ document.addEventListener("DOMContentLoaded", () => {
             formAlert.className = "form-alert success";
             formAlert.innerHTML = `<strong>${result.title || "Success"}</strong>: ${result.message}`;
             formAlert.style.display = "block";
+          }
+          // Launch rich notification popup modal with Google Meet & Google Calendar buttons
+          if (typeof showAppointmentSuccessModal === "function") {
+            showAppointmentSuccessModal(result);
           }
           bookingForm.reset();
         } else {

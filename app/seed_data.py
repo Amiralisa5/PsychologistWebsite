@@ -1,7 +1,7 @@
 import datetime
 import json
 from app.database import Base, engine, SessionLocal
-from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article, SocialSettings
+from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article, SocialSettings, ClinicEvent
 from app.auth import hash_password
 
 
@@ -401,6 +401,24 @@ def seed_database():
             for req in sample_requests:
                 db.add(req)
             print("Seeded initial appointment requests for Admin Portal")
+
+        # 5. Clinic Events / Upcoming Webinars
+        if db.query(ClinicEvent).count() == 0:
+            webinar = ClinicEvent(
+                title_en="Specialized Clinical Webinar: Grief, Trauma & Defense Mechanisms in Classical Literature",
+                title_fa="کارگاه آنلاین و تخصصی: سوگ، تروما و مکانیزم‌های دفاع روانی در شاهنامه و تاریخ بیهقی",
+                description_en="Join Dr. Hassan Agha Nasiri for an in-depth clinical and existential exploration of mourning, ambiguous loss, and coping mechanisms.",
+                description_fa="وبینار تخصصی تحلیل کهن‌الگوهای سوگ، تروما و مکانیزم‌های دفاعی با حضور دکتر حسن آقانصیری. بررسی پیوند متون کهن با التیام روان‌شناختی معاصر.",
+                event_date="2026-11-20",
+                event_time="18:00 - 20:00 (Tehran Time)",
+                event_format="Online (Google Meet)",
+                meet_link="https://meet.google.com/das-ein-meet",
+                location_en="Online via Google Meet",
+                location_fa="آنلاین از طریق گوگل میت (Google Meet)",
+                is_active=True
+            )
+            db.add(webinar)
+            print("Seeded initial ClinicEvent")
 
         db.commit()
     finally:

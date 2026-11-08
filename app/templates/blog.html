@@ -34,6 +34,7 @@
           <div class="article-meta">
             <span class="article-category">{{ article.category }}</span>
             <span>⏱️ {{ article.read_time }} {{ t.read_time_suffix }}</span>
+            <span>🗓️ {% if t.lang_code == 'fa' %}{{ article.created_at | shamsi_date }}{% else %}{{ article.created_at.strftime('%b %d, %Y') if article.created_at else '' }}{% endif %}</span>
           </div>
           <h3 class="article-title">
             <a href="/blog/{{ article.slug }}?lang={{ t.lang_code }}">

@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article, SocialSettings
+from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article, SocialSettings, ClinicEvent
 from app.auth import verify_password, create_session_token, verify_session_token
 from app.services.social_service import (
     send_telegram_post,
@@ -13,11 +13,9 @@ from app.services.social_service import (
     format_article_for_telegram,
     format_article_for_instagram
 )
+from app.templates_config import templates
 
 router = APIRouter(prefix="/admin")
-
-TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates")
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 def get_admin_user_from_cookie(request: Request):
@@ -389,6 +387,7 @@ def update_profile_action(
     instagram_url: str = Form("https://instagram.com/dasein.journal"),
     address_en: str = Form(...),
     address_fa: str = Form(...),
+    default_meet_link: str = Form("https://meet.google.com/das-ein-meet"),
     credentials_en: str = Form(""),
     credentials_fa: str = Form(""),
     specializations_en: str = Form(""),
@@ -418,6 +417,7 @@ def update_profile_action(
     profile.instagram_url = instagram_url.strip()
     profile.address_en = address_en.strip()
     profile.address_fa = address_fa.strip()
+    profile.default_meet_link = default_meet_link.strip() if default_meet_link else "https://meet.google.com/das-ein-meet"
 
     # Split lines into lists
     profile.credentials_en = [c.strip() for c in credentials_en.split("\n") if c.strip()]

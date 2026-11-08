@@ -99,6 +99,14 @@
       </div>
     </div>
 
+    <div class="form-group" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 1.25rem; border-radius: var(--radius-sm); margin: 1.5rem 0;">
+      <label for="default_meet_link" style="color: #166534; font-weight: 700;">Default Google Meet Room URL (For Online Consultations)</label>
+      <input type="text" id="default_meet_link" name="default_meet_link" value="{{ profile.default_meet_link or 'https://meet.google.com/das-ein-meet' }}" placeholder="https://meet.google.com/das-ein-meet">
+      <small style="color: #15803d; font-size: 0.8rem; display: block; margin-top: 0.35rem;">
+        This Google Meet room link will be automatically attached to online consultation requests and Google Calendar invites.
+      </small>
+    </div>
+
     <h3 style="font-size: 1.25rem; font-family: var(--font-sans); margin: 2rem 0 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
       Credentials &amp; Specializations (Line-separated)
     </h3>

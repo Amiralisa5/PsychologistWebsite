@@ -210,6 +210,7 @@
           <div class="article-meta">
             <span class="article-category">{{ article.category }}</span>
             <span>⏱️ {{ article.read_time }} {{ t.read_time_suffix }}</span>
+            <span>🗓️ {% if t.lang_code == 'fa' %}{{ article.created_at | shamsi_date }}{% else %}{{ article.created_at.strftime('%b %d, %Y') if article.created_at else '' }}{% endif %}</span>
           </div>
           <h3 class="article-title">
             <a href="/blog/{{ article.slug }}?lang={{ t.lang_code }}">
@@ -303,6 +304,9 @@
               <option value="Online">{{ t.format_online }}</option>
               <option value="In-Person">{{ t.format_inperson }}</option>
             </select>
+            <small style="display: block; margin-top: 0.35rem; color: #0284c7; font-size: 0.8rem;">
+              📹 {{ t.online_session_meet_hint }}
+            </small>
           </div>
         </div>
 
@@ -329,8 +333,51 @@
         </div>
 
         <div class="form-group">
-          <label for="preferred_date">{{ t.form_date }}</label>
+          <label for="preferred_date">{{ t.form_date }} ({% if t.lang_code == 'fa' %}{{ t.persian_calendar_label }}{% else %}{{ t.gregorian_calendar_label }}{% endif %})</label>
+          {% if t.lang_code == 'fa' %}
+          <div id="shamsiPickerWrap" class="shamsi-picker-container">
+            <div class="shamsi-picker-grid">
+              <div>
+                <label style="font-size: 0.78rem; color: #475569; display: block; margin-bottom: 0.2rem;">روز</label>
+                <select id="shamsiDay" class="shamsi-select" style="padding: 0.45rem; font-size: 0.9rem; width: 100%;">
+                  {% for d in range(1, 32) %}
+                  <option value="{{ d }}">{{ d | persian_digits }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; color: #475569; display: block; margin-bottom: 0.2rem;">ماه</label>
+                <select id="shamsiMonth" class="shamsi-select" style="padding: 0.45rem; font-size: 0.9rem; width: 100%;">
+                  <option value="1">فروردین</option>
+                  <option value="2">اردیبهشت</option>
+                  <option value="3">خرداد</option>
+                  <option value="4">تیر</option>
+                  <option value="5">مرداد</option>
+                  <option value="6">شهریور</option>
+                  <option value="7">مهر</option>
+                  <option value="8" selected>آبان</option>
+                  <option value="9">آذر</option>
+                  <option value="10">دی</option>
+                  <option value="11">بهمن</option>
+                  <option value="12">اسفند</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; color: #475569; display: block; margin-bottom: 0.2rem;">سال</label>
+                <select id="shamsiYear" class="shamsi-select" style="padding: 0.45rem; font-size: 0.9rem; width: 100%;">
+                  <option value="1405" selected>۱۴۰۵</option>
+                  <option value="1406">۱۴۰۶</option>
+                </select>
+              </div>
+            </div>
+            <div id="shamsiDatePreview" class="shamsi-date-badge"></div>
+          </div>
+          <input type="hidden" id="preferred_date" name="preferred_date">
+          <input type="hidden" id="preferred_date_shamsi" name="preferred_date_shamsi">
+          {% else %}
           <input type="date" id="preferred_date" name="preferred_date">
+          <input type="hidden" id="preferred_date_shamsi" name="preferred_date_shamsi">
+          {% endif %}
         </div>
 
         <div class="form-group">

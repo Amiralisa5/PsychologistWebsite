@@ -1,18 +1,15 @@
 import re
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 import os
 
 from app.database import get_db
-from app.models import TherapistProfile, Article
+from app.models import TherapistProfile, Article, ClinicEvent
 from app.translations import get_translations
+from app.templates_config import templates
 
 router = APIRouter()
-
-TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates")
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 def resolve_lang(request: Request) -> str:
@@ -23,6 +20,19 @@ def resolve_lang(request: Request) -> str:
     if cookie_lang in ["en", "fa"]:
         return cookie_lang
     return "en"
+
+
+def get_public_context(db: Session, request: Request, active_page: str = "") -> dict:
+    lang = resolve_lang(request)
+    t = get_translations(lang)
+    profile = db.query(TherapistProfile).first()
+    event = db.query(ClinicEvent).filter(ClinicEvent.is_active == True).order_by(ClinicEvent.event_date.asc()).first()
+    return {
+        "t": t,
+        "profile": profile,
+        "upcoming_event": event,
+        "active_page": active_page
+    }
 
 
 def markdown_to_html(md_text: str) -> str:
@@ -59,89 +69,61 @@ def markdown_to_html(md_text: str) -> str:
 
 @router.get("/", response_class=HTMLResponse)
 def index_view(request: Request, db: Session = Depends(get_db)):
-    lang = resolve_lang(request)
-    t = get_translations(lang)
-    profile = db.query(TherapistProfile).first()
+    ctx = get_public_context(db, request, active_page="home")
     featured_articles = db.query(Article).filter(Article.published == True).order_by(Article.created_at.desc()).limit(3).all()
+    ctx["articles"] = featured_articles
 
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={
-            "t": t,
-            "profile": profile,
-            "articles": featured_articles,
-            "active_page": "home"
-        }
+        context=ctx
     )
 
 
 @router.get("/about", response_class=HTMLResponse)
 def about_view(request: Request, db: Session = Depends(get_db)):
-    lang = resolve_lang(request)
-    t = get_translations(lang)
-    profile = db.query(TherapistProfile).first()
-
+    ctx = get_public_context(db, request, active_page="about")
     return templates.TemplateResponse(
         request=request,
         name="about.html",
-        context={
-            "t": t,
-            "profile": profile,
-            "active_page": "about"
-        }
+        context=ctx
     )
 
 
 @router.get("/services", response_class=HTMLResponse)
 def services_view(request: Request, db: Session = Depends(get_db)):
-    lang = resolve_lang(request)
-    t = get_translations(lang)
-    profile = db.query(TherapistProfile).first()
-
+    ctx = get_public_context(db, request, active_page="services")
     return templates.TemplateResponse(
         request=request,
         name="services.html",
-        context={
-            "t": t,
-            "profile": profile,
-            "active_page": "services"
-        }
+        context=ctx
     )
 
 
 @router.get("/blog", response_class=HTMLResponse)
 def blog_view(request: Request, category: str = None, db: Session = Depends(get_db)):
-    lang = resolve_lang(request)
-    t = get_translations(lang)
-    profile = db.query(TherapistProfile).first()
+    ctx = get_public_context(db, request, active_page="blog")
 
     query = db.query(Article).filter(Article.published == True)
     if category:
         query = query.filter(Article.category == category)
     articles = query.order_by(Article.created_at.desc()).all()
-
     all_categories = [c[0] for c in db.query(Article.category).distinct().all() if c[0]]
+
+    ctx["articles"] = articles
+    ctx["categories"] = all_categories
+    ctx["current_cat"] = category
 
     return templates.TemplateResponse(
         request=request,
         name="blog.html",
-        context={
-            "t": t,
-            "profile": profile,
-            "articles": articles,
-            "categories": all_categories,
-            "current_cat": category,
-            "active_page": "blog"
-        }
+        context=ctx
     )
 
 
 @router.get("/blog/{slug}", response_class=HTMLResponse)
 def blog_detail_view(slug: str, request: Request, db: Session = Depends(get_db)):
-    lang = resolve_lang(request)
-    t = get_translations(lang)
-    profile = db.query(TherapistProfile).first()
+    ctx = get_public_context(db, request, active_page="blog")
     article = db.query(Article).filter(Article.slug == slug, Article.published == True).first()
 
     if not article:
@@ -150,34 +132,24 @@ def blog_detail_view(slug: str, request: Request, db: Session = Depends(get_db))
     article.views_count = (article.views_count or 0) + 1
     db.commit()
 
-    content = article.content_fa if lang == "fa" else article.content_en
+    content = article.content_fa if ctx["t"]["lang_code"] == "fa" else article.content_en
     rendered = markdown_to_html(content)
+
+    ctx["article"] = article
+    ctx["rendered_content"] = rendered
 
     return templates.TemplateResponse(
         request=request,
         name="blog_detail.html",
-        context={
-            "t": t,
-            "profile": profile,
-            "article": article,
-            "rendered_content": rendered,
-            "active_page": "blog"
-        }
+        context=ctx
     )
 
 
 @router.get("/booking", response_class=HTMLResponse)
 def booking_view(request: Request, db: Session = Depends(get_db)):
-    lang = resolve_lang(request)
-    t = get_translations(lang)
-    profile = db.query(TherapistProfile).first()
-
+    ctx = get_public_context(db, request, active_page="booking")
     return templates.TemplateResponse(
         request=request,
         name="booking.html",
-        context={
-            "t": t,
-            "profile": profile,
-            "active_page": "booking"
-        }
+        context=ctx
     )

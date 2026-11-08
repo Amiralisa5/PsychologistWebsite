@@ -45,6 +45,7 @@ class TherapistProfile(Base):
     address_en = Column(String(300), default="Suite 402, North Kargar Ave, Tehran / Online Worldwide")
     address_fa = Column(String(300), default="تهران، خیابان کارگر شمالی، ساختمان پزشکان، واحد ۴۰۲ / جلسات آنلاین بین‌المللی")
     photo_url = Column(String(300), default="/static/images/dr-hassan-aghanasiri.jpg")
+    default_meet_link = Column(String(300), default="https://meet.google.com/das-ein-meet")
     updated_at = Column(DateTime, default=utcnow, onupdate=utcnow)
 
     @property
@@ -106,8 +107,33 @@ class AppointmentRequest(Base):
     notes = Column(Text, nullable=True)
     status = Column(String(50), default="Pending")  # Pending, Confirmed, Completed, Cancelled
     therapist_notes = Column(Text, nullable=True)
+    meet_link = Column(String(300), default="https://meet.google.com/das-ein-meet")
+    preferred_date_shamsi = Column(String(50), nullable=True)
     language_used = Column(String(10), default="en")  # en or fa
     created_at = Column(DateTime, default=utcnow)
+
+    @property
+    def display_shamsi_date(self):
+        from app.utils.persian_calendar import format_jalali_date, to_persian_digits
+        if self.preferred_date_shamsi:
+            return to_persian_digits(self.preferred_date_shamsi)
+        if self.preferred_date:
+            return format_jalali_date(self.preferred_date)
+        return ""
+
+    @property
+    def google_calendar_link(self):
+        from app.utils.persian_calendar import generate_google_calendar_url
+        return generate_google_calendar_url(
+            title=f"Therapy Consultation: {self.client_name} — Dr. Hassan Agha Nasiri",
+            date_str=self.preferred_date or self.preferred_date_shamsi,
+            time_slot=self.preferred_time,
+            service_type=self.service_type,
+            client_name=self.client_name,
+            meet_link=self.meet_link or "https://meet.google.com/das-ein-meet",
+            session_format=self.session_format,
+            notes=self.notes
+        )
 
 
 class Article(Base):
@@ -156,4 +182,40 @@ class SocialSettings(Base):
     instagram_auto_publish = Column(Boolean, default=False)
 
     updated_at = Column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class ClinicEvent(Base):
+    __tablename__ = "clinic_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title_en = Column(String(250), nullable=False)
+    title_fa = Column(String(250), nullable=False)
+    description_en = Column(Text, nullable=True)
+    description_fa = Column(Text, nullable=True)
+    event_date = Column(String(50), nullable=False)  # YYYY-MM-DD
+    event_time = Column(String(50), default="18:00 - 20:00")
+    event_format = Column(String(50), default="Online (Google Meet)")
+    meet_link = Column(String(300), default="https://meet.google.com/das-ein-meet")
+    location_en = Column(String(200), default="Online via Google Meet")
+    location_fa = Column(String(200), default="آنلاین در گوگل میت (Google Meet)")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=utcnow)
+
+    @property
+    def display_shamsi_date(self):
+        from app.utils.persian_calendar import format_jalali_date
+        return format_jalali_date(self.event_date)
+
+    @property
+    def google_calendar_link(self):
+        from app.utils.persian_calendar import generate_google_calendar_url
+        return generate_google_calendar_url(
+            title=f"Dasein Journal Webinar: {self.title_en}",
+            date_str=self.event_date,
+            time_slot=self.event_time,
+            service_type="Clinical Webinar & Workshop",
+            meet_link=self.meet_link,
+            session_format="Online",
+            notes=self.description_en or self.description_fa
+        )
 
