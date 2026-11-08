@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="{{ t.lang_code }}" dir="{{ t.dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{ t.hero_subtitle }}">
+  <title>{% block title %}{{ t.site_title }}{% endblock %}</title>
+  
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Emergency Support Banner -->
+  <aside class="emergency-banner" role="complementary">
+    <div class="container">
+      {{ t.emergency_notice }}
+    </div>
+  </aside>
+
+  <!-- Sticky Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/?lang={{ t.lang_code }}" class="brand-link" aria-label="{{ t.site_title }}">
+        <div class="brand-icon">F</div>
+        <div class="brand-name">
+          {% if t.lang_code == 'fa' %}
+            <span>{{ profile.name_fa }}</span>
+            <small>{{ profile.title_fa }}</small>
+          {% else %}
+            <span>{{ profile.name_en }}</span>
+            <small>{{ profile.title_en }}</small>
+          {% endif %}
+        </div>
+      </a>
+
+      <!-- Desktop & Mobile Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/?lang={{ t.lang_code }}" class="nav-link {% if active_page == 'home' %}active{% endif %}">{{ t.nav_home }}</a></li>
+          <li><a href="/about?lang={{ t.lang_code }}" class="nav-link {% if active_page == 'about' %}active{% endif %}">{{ t.nav_about }}</a></li>
+          <li><a href="/services?lang={{ t.lang_code }}" class="nav-link {% if active_page == 'services' %}active{% endif %}">{{ t.nav_specialties }}</a></li>
+          <li><a href="/blog?lang={{ t.lang_code }}" class="nav-link {% if active_page == 'blog' %}active{% endif %}">{{ t.nav_articles }}</a></li>
+          <li><a href="/booking?lang={{ t.lang_code }}" class="nav-link {% if active_page == 'booking' %}active{% endif %}">{{ t.nav_booking }}</a></li>
+          <li><a href="/admin" class="nav-link" target="_blank" style="color: var(--text-light); font-size: 0.85rem;">{{ t.nav_admin }}</a></li>
+        </ul>
+      </nav>
+
+      <!-- Action items: Language switcher + Booking Button -->
+      <div class="header-actions">
+        {% if t.lang_code == 'en' %}
+          <button type="button" class="lang-switch lang-switch-action" data-lang="fa" title="تغییر زبان به فارسی">
+            <span aria-hidden="true">🇮🇷</span>
+            <span>فارسی</span>
+          </button>
+        {% else %}
+          <button type="button" class="lang-switch lang-switch-action" data-lang="en" title="Switch language to English">
+            <span aria-hidden="true">🇺🇸</span>
+            <span>English</span>
+          </button>
+        {% endif %}
+
+        <a href="/booking?lang={{ t.lang_code }}" class="btn btn-primary btn-sm">
+          {{ t.nav_booking }}
+        </a>
+
+        <button class="mobile-nav-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main id="mainContent">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Comprehensive Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>
+            {% if t.lang_code == 'fa' %}{{ profile.name_fa }}{% else %}{{ profile.name_en }}{% endif %}
+          </h4>
+          <p>
+            {% if t.lang_code == 'fa' %}
+              {{ profile.title_fa }} — ارائه خدمات روان‌درمانی فردی و زوج‌درمانی بر پایه اصول علمی روز و رازداری حرفه‌ای.
+            {% else %}
+              {{ profile.title_en }} — Compassionate, evidence-informed psychotherapy for individuals and couples.
+            {% endif %}
+          </p>
+          <p style="margin-top: 1rem; color: #10b981; font-size: 0.85rem; font-weight: 600;">
+            ✓ {{ t.footer_confidential }}
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>{{ t.quick_links }}</h4>
+          <ul>
+            <li><a href="/?lang={{ t.lang_code }}">{{ t.nav_home }}</a></li>
+            <li><a href="/about?lang={{ t.lang_code }}">{{ t.nav_about }}</a></li>
+            <li><a href="/services?lang={{ t.lang_code }}">{{ t.nav_specialties }}</a></li>
+            <li><a href="/blog?lang={{ t.lang_code }}">{{ t.nav_articles }}</a></li>
+            <li><a href="/booking?lang={{ t.lang_code }}">{{ t.nav_booking }}</a></li>
+            <li><a href="/admin">{{ t.nav_admin }}</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>{{ t.contact_info_title }}</h4>
+          <ul>
+            <li>📞 <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></li>
+            <li>✉️ <a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
+            <li>📍 {% if t.lang_code == 'fa' %}{{ profile.address_fa }}{% else %}{{ profile.address_en }}{% endif %}</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>{{ t.office_hours_title }}</h4>
+          <p>{{ t.office_hours }}</p>
+          <div style="margin-top: 1.25rem;">
+            <a href="/booking?lang={{ t.lang_code }}" class="btn btn-outline btn-sm" style="color: #ffffff; border-color: #374151;">
+              {{ t.hero_cta_primary }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © <span id="currentYear"></span> {% if t.lang_code == 'fa' %}{{ profile.name_fa }}{% else %}{{ profile.name_en }}{% endif %}. {{ t.footer_rights }}
+        </div>
+        <div>
+          <a href="/admin" style="color: #64748b; font-size: 0.8rem;">Admin Login</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

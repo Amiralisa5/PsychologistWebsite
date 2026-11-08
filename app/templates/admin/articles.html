@@ -1,0 +1,172 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Manage Articles &amp; Blog Posts{% endblock %}
+
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+    Publish clinical guides, reflections, and self-help articles in English and Persian.
+  </p>
+  <button type="button" class="btn btn-primary btn-sm" onclick="openNewArticleModal()">
+    + Create New Article
+  </button>
+</div>
+
+<div class="data-table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Article</th>
+        <th>Category</th>
+        <th>Read Time</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for art in articles %}
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <img src="{{ art.featured_image }}" alt="" style="width: 48px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);">
+            <div>
+              <div style="font-weight: 600; color: #111827;">{{ art.title_en }}</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); direction: rtl; text-align: right;">{{ art.title_fa }}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span style="background-color: var(--primary-light); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">
+            {{ art.category }}
+          </span>
+        </td>
+        <td style="font-size: 0.85rem; color: var(--text-muted);">{{ art.read_time }} min</td>
+        <td>
+          {% if art.published %}
+            <span class="status-pill status-confirmed">● Published</span>
+          {% else %}
+            <span class="status-pill status-cancelled">● Draft</span>
+          {% endif %}
+        </td>
+        <td style="font-size: 0.82rem; color: var(--text-muted);">
+          {{ art.created_at.strftime('%Y-%m-%d') }}
+        </td>
+        <td>
+          <div style="display: flex; gap: 0.4rem;">
+            <a href="/blog/{{ art.slug }}" target="_blank" class="btn btn-outline btn-sm" title="View Article">
+              👁️
+            </a>
+            <button type="button" class="btn btn-outline btn-sm" style="color: var(--danger); border-color: #fee2e2;"
+              onclick="deleteArticle({{ art.id }}, '{{ art.title_en | escape }}')">
+              🗑️
+            </button>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+          No articles created yet. Click "+ Create New Article" to add one.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal for Creating New Article -->
+<div class="modal-overlay" id="articleModal">
+  <div class="modal-content" style="max-width: 780px;">
+    <div class="modal-header">
+      <h3 style="font-size: 1.15rem; font-family: var(--font-sans); margin: 0;">Create New Article</h3>
+      <button type="button" id="closeArticleModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    </div>
+
+    <form action="/admin/articles/create" method="POST">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title_en">Title (English) *</label>
+            <input type="text" id="title_en" name="title_en" required placeholder="e.g. Grounding Anxiety">
+          </div>
+          <div class="form-group">
+            <label for="title_fa">Title (فارسی) *</label>
+            <input type="text" id="title_fa" name="title_fa" required dir="rtl" placeholder="عنوان مقاله به فارسی">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="slug">URL Slug *</label>
+            <input type="text" id="slug" name="slug" required placeholder="e.g. grounding-anxiety-guide">
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+              <option value="Mental Health">Mental Health</option>
+              <option value="Anxiety & Stress">Anxiety &amp; Stress</option>
+              <option value="Relationships">Relationships</option>
+              <option value="Self Care">Self Care</option>
+              <option value="Mindfulness">Mindfulness</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="read_time">Estimated Read Time (minutes)</label>
+            <input type="number" id="read_time" name="read_time" value="5" min="1">
+          </div>
+          <div class="form-group">
+            <label for="featured_image">Featured Image URL</label>
+            <input type="text" id="featured_image" name="featured_image" value="/static/images/article-default.svg">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="excerpt_en">Short Excerpt (English) *</label>
+            <textarea id="excerpt_en" name="excerpt_en" rows="2" required placeholder="One or two sentence summary..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="excerpt_fa">Short Excerpt (فارسی) *</label>
+            <textarea id="excerpt_fa" name="excerpt_fa" rows="2" required dir="rtl" placeholder="چکیده کوتاه به فارسی..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="content_en">Article Content (English Markdown / HTML) *</label>
+          <textarea id="content_en" name="content_en" rows="6" required placeholder="## Introduction&#10;&#10;Write the full clinical insight here..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="content_fa">Article Content (فارسی Markdown / HTML) *</label>
+          <textarea id="content_fa" name="content_fa" rows="6" required dir="rtl" placeholder="## مقدمه&#10;&#10;متن کامل مقاله به فارسی..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="published" value="true" checked>
+            <span>Publish immediately (visible on public website)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-sm">Save &amp; Publish Article</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openNewArticleModal() {
+    const modal = document.getElementById("articleModal");
+    if (modal) modal.classList.add("active");
+  }
+  document.getElementById("closeArticleModal")?.addEventListener("click", () => {
+    document.getElementById("articleModal")?.classList.remove("active");
+  });
+</script>
+{% endblock %}

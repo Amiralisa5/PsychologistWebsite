@@ -1,0 +1,163 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Consultation &amp; Appointment Requests{% endblock %}
+
+{% block admin_content %}
+<div class="data-table-container">
+  <!-- Table Header Toolbar -->
+  <div class="table-toolbar" style="flex-wrap: wrap;">
+    <!-- Filter Tabs -->
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button type="button" class="btn btn-outline btn-sm filter-tab active" data-status="all">
+        All ({{ appointments | length }})
+      </button>
+      <button type="button" class="btn btn-outline btn-sm filter-tab" data-status="pending">
+        Pending ({{ counts.pending }})
+      </button>
+      <button type="button" class="btn btn-outline btn-sm filter-tab" data-status="confirmed">
+        Confirmed ({{ counts.confirmed }})
+      </button>
+      <button type="button" class="btn btn-outline btn-sm filter-tab" data-status="completed">
+        Completed ({{ counts.completed }})
+      </button>
+      <button type="button" class="btn btn-outline btn-sm filter-tab" data-status="cancelled">
+        Cancelled ({{ counts.cancelled }})
+      </button>
+    </div>
+
+    <!-- Search Input -->
+    <div style="min-width: 260px;">
+      <input type="text" id="searchAppointments" placeholder="Search by name, email, phone..." style="padding: 0.4rem 0.85rem; font-size: 0.88rem;">
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Client Name</th>
+        <th>Contact Info</th>
+        <th>Service Focus</th>
+        <th>Format</th>
+        <th>Date / Time</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appt in appointments %}
+      <tr class="appointment-row" data-status="{{ appt.status | lower }}">
+        <td>
+          <strong>{{ appt.client_name }}</strong>
+          {% if appt.language_used == 'fa' %}
+            <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 2px 5px; border-radius: 4px; margin-left: 4px;">فارسی</span>
+          {% else %}
+            <span style="font-size: 0.72rem; background: #f1f5f9; color: #475569; padding: 2px 5px; border-radius: 4px; margin-left: 4px;">EN</span>
+          {% endif %}
+        </td>
+        <td>
+          <div>✉️ <a href="mailto:{{ appt.email }}">{{ appt.email }}</a></div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">📞 {{ appt.phone }}</div>
+        </td>
+        <td style="font-size: 0.88rem;">{{ appt.service_type }}</td>
+        <td>
+          <span style="font-size: 0.82rem; font-weight: 500;">
+            {% if appt.session_format == 'Online' %}🌐 Online{% else %}🏢 In-Person{% endif %}
+          </span>
+        </td>
+        <td style="font-size: 0.85rem; color: var(--text-muted);">
+          <div>{{ appt.preferred_date or 'Flexible' }}</div>
+          <div style="font-size: 0.78rem;">{{ appt.preferred_time or 'Anytime' }}</div>
+        </td>
+        <td>
+          <!-- Quick Status Select -->
+          <select class="quick-status-select" data-id="{{ appt.id }}" style="padding: 0.25rem 0.5rem; font-size: 0.82rem; border-radius: 6px;">
+            <option value="Pending" {% if appt.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Confirmed" {% if appt.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+            <option value="Completed" {% if appt.status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if appt.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+          </select>
+        </td>
+        <td style="color: var(--text-muted); font-size: 0.82rem;">
+          {{ appt.created_at.strftime('%Y-%m-%d') }}
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline btn-sm"
+            onclick="openAppointmentModal(
+              {{ appt.id }},
+              '{{ appt.client_name | escape }}',
+              '{{ appt.email | escape }}',
+              '{{ appt.phone | escape }}',
+              '{{ appt.service_type | escape }}',
+              '{{ appt.session_format | escape }}',
+              '{{ appt.preferred_date or '' }}',
+              '{{ appt.preferred_time or '' }}',
+              '{{ (appt.notes or '') | escape }}',
+              '{{ appt.status }}',
+              '{{ (appt.therapist_notes or '') | escape }}'
+            )">
+            Notes &amp; Details
+          </button>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+          No consultation requests match this filter.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal for Appointment Details & Therapist Notes -->
+<div class="modal-overlay" id="appointmentModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 style="font-size: 1.15rem; font-family: var(--font-sans); margin: 0;">Consultation Details &amp; Notes</h3>
+      <button type="button" id="closeApptModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    </div>
+
+    <form id="apptNotesForm">
+      <div class="modal-body">
+        <input type="hidden" id="modalApptId" name="id">
+
+        <div style="background-color: var(--bg-alt); padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.9rem;">
+            <div><strong>Client:</strong> <span id="modalClientName"></span></div>
+            <div><strong>Email:</strong> <span id="modalClientEmail"></span></div>
+            <div><strong>Phone:</strong> <span id="modalClientPhone"></span></div>
+            <div><strong>Format:</strong> <span id="modalFormat"></span></div>
+            <div><strong>Service:</strong> <span id="modalService"></span></div>
+            <div><strong>Date &amp; Time:</strong> <span id="modalDateTime"></span></div>
+          </div>
+          <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+            <strong style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Client Inquiry Message:</strong>
+            <p id="modalClientNotes" style="font-size: 0.92rem; color: var(--text-main); font-style: italic; margin: 0;"></p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="modalApptStatus">Update Appointment Status</label>
+          <select id="modalApptStatus" name="status">
+            <option value="Pending">Pending Review</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="modalTherapistNotes">Therapist Internal Notes (Confidential)</label>
+          <textarea id="modalTherapistNotes" name="therapist_notes" rows="4" placeholder="Record confidential clinical notes, follow-up agreements, or payment details..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

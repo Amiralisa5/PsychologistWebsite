@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if t.lang_code == 'fa' %}
+    {{ profile.name_fa }} | {{ profile.title_fa }}
+  {% else %}
+    {{ profile.name_en }} | {{ profile.title_en }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>✨</span> {{ t.hero_badge }}
+      </div>
+
+      <h1 class="hero-title">
+        {{ t.hero_title_lead }} <em>{{ t.hero_title_highlight }}</em>
+      </h1>
+
+      <p class="hero-lead">
+        {{ t.hero_subtitle }}
+      </p>
+
+      <div class="hero-ctas">
+        <a href="/booking?lang={{ t.lang_code }}" class="btn btn-primary">
+          {{ t.hero_cta_primary }}
+          {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+        </a>
+        <a href="#specialties" class="btn btn-outline">
+          {{ t.hero_cta_secondary }}
+        </a>
+      </div>
+
+      <!-- Trust & Clinical Metrics -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <h4>{{ profile.years_experience }}+</h4>
+          <p>{% if t.lang_code == 'fa' %}سال سابقه درمان بالینی{% else %}Years Clinical Experience{% endif %}</p>
+        </div>
+        <div class="stat-item">
+          <h4>4,800+</h4>
+          <p>{% if t.lang_code == 'fa' %}ساعت مشاوره و درمان{% else %}Therapeutic Hours{% endif %}</p>
+        </div>
+        <div class="stat-item">
+          <h4>100%</h4>
+          <p>{% if t.lang_code == 'fa' %}رازداری و اصول اخلاقی{% else %}Confidential & Certified{% endif %}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual Profile Presentation -->
+    <div class="hero-visual">
+      <div class="hero-image-card">
+        <img src="{{ profile.photo_url }}" alt="{% if t.lang_code == 'fa' %}{{ profile.name_fa }}{% else %}{{ profile.name_en }}{% endif %}" class="hero-avatar">
+        
+        <div class="floating-card">
+          <div class="floating-icon">🌱</div>
+          <div>
+            <strong>{% if t.lang_code == 'fa' %}جلسات آنلاین و حضوری{% else %}In-Person & Online{% endif %}</strong>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">{% if t.lang_code == 'fa' %}پذیرش مراجعین جدید{% else %}Accepting New Clients{% endif %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Welcome Section -->
+<section class="section section-alt">
+  <div class="container welcome-grid">
+    <div>
+      <span class="eyebrow">{{ t.welcome_eyebrow }}</span>
+      <h2>{{ t.welcome_title }}</h2>
+    </div>
+    <div class="welcome-copy">
+      <p>{{ t.welcome_p1 }}</p>
+      <p>{{ t.welcome_p2 }}</p>
+      <div style="margin-top: 1.5rem;">
+        <a href="/about?lang={{ t.lang_code }}" class="btn btn-outline">
+          {{ t.meet_therapist_btn }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Clinical Specialties Section -->
+<section class="section" id="specialties">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">{{ t.specialties_eyebrow }}</span>
+      <h2>{{ t.specialties_title }}</h2>
+      <p>{{ t.specialties_subtitle }}</p>
+    </div>
+
+    <div class="specialties-grid">
+      <article class="spec-card">
+        <div class="spec-icon-box">🌊</div>
+        <h3>{{ t.spec_1_title }}</h3>
+        <p>{{ t.spec_1_desc }}</p>
+        <a href="/services?lang={{ t.lang_code }}" class="text-link" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">
+          {% if t.lang_code == 'fa' %}اطلاعات بیشتر ←{% else %}Learn more →{% endif %}
+        </a>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">☀️</div>
+        <h3>{{ t.spec_2_title }}</h3>
+        <p>{{ t.spec_2_desc }}</p>
+        <a href="/services?lang={{ t.lang_code }}" class="text-link" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">
+          {% if t.lang_code == 'fa' %}اطلاعات بیشتر ←{% else %}Learn more →{% endif %}
+        </a>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🤝</div>
+        <h3>{{ t.spec_3_title }}</h3>
+        <p>{{ t.spec_3_desc }}</p>
+        <a href="/services?lang={{ t.lang_code }}" class="text-link" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">
+          {% if t.lang_code == 'fa' %}اطلاعات بیشتر ←{% else %}Learn more →{% endif %}
+        </a>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🕊️</div>
+        <h3>{{ t.spec_4_title }}</h3>
+        <p>{{ t.spec_4_desc }}</p>
+        <a href="/services?lang={{ t.lang_code }}" class="text-link" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">
+          {% if t.lang_code == 'fa' %}اطلاعات بیشتر ←{% else %}Learn more →{% endif %}
+        </a>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🧭</div>
+        <h3>{{ t.spec_5_title }}</h3>
+        <p>{{ t.spec_5_desc }}</p>
+        <a href="/services?lang={{ t.lang_code }}" class="text-link" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">
+          {% if t.lang_code == 'fa' %}اطلاعات بیشتر ←{% else %}Learn more →{% endif %}
+        </a>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🧘</div>
+        <h3>{{ t.spec_6_title }}</h3>
+        <p>{{ t.spec_6_desc }}</p>
+        <a href="/services?lang={{ t.lang_code }}" class="text-link" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">
+          {% if t.lang_code == 'fa' %}اطلاعات بیشتر ←{% else %}Learn more →{% endif %}
+        </a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Three Pillars / Approach Section -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">{{ t.approach_eyebrow }}</span>
+      <h2>{{ t.approach_title }}</h2>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-number">{{ t.pillar_1_num }}</div>
+        <h3>{{ t.pillar_1_title }}</h3>
+        <p>{{ t.pillar_1_desc }}</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-number">{{ t.pillar_2_num }}</div>
+        <h3>{{ t.pillar_2_title }}</h3>
+        <p>{{ t.pillar_2_desc }}</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-number">{{ t.pillar_3_num }}</div>
+        <h3>{{ t.pillar_3_title }}</h3>
+        <p>{{ t.pillar_3_desc }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Inspiring Quote Banner -->
+<section class="quote-banner">
+  <div class="container">
+    <blockquote>{{ t.quote_text }}</blockquote>
+    <div class="quote-author">{{ t.quote_author }}</div>
+  </div>
+</section>
+
+<!-- Featured Articles Section -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">{{ t.articles_eyebrow }}</span>
+      <h2>{{ t.articles_title }}</h2>
+      <p>{{ t.articles_subtitle }}</p>
+    </div>
+
+    <div class="articles-grid">
+      {% for article in articles %}
+      <article class="article-card">
+        <img src="{{ article.featured_image }}" alt="{% if t.lang_code == 'fa' %}{{ article.title_fa }}{% else %}{{ article.title_en }}{% endif %}" class="article-image">
+        <div class="article-content">
+          <div class="article-meta">
+            <span class="article-category">{{ article.category }}</span>
+            <span>⏱️ {{ article.read_time }} {{ t.read_time_suffix }}</span>
+          </div>
+          <h3 class="article-title">
+            <a href="/blog/{{ article.slug }}?lang={{ t.lang_code }}">
+              {% if t.lang_code == 'fa' %}{{ article.title_fa }}{% else %}{{ article.title_en }}{% endif %}
+            </a>
+          </h3>
+          <p class="article-excerpt">
+            {% if t.lang_code == 'fa' %}{{ article.excerpt_fa }}{% else %}{{ article.excerpt_en }}{% endif %}
+          </p>
+          <a href="/blog/{{ article.slug }}?lang={{ t.lang_code }}" class="btn btn-outline btn-sm" style="align-self: flex-start;">
+            {{ t.read_more }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem;">
+      <a href="/blog?lang={{ t.lang_code }}" class="btn btn-outline">
+        {{ t.articles_view_all }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Booking Consultation Section (Live Form) -->
+<section class="section booking-section" id="booking">
+  <div class="container booking-grid">
+    <div class="booking-info">
+      <span class="eyebrow">{{ t.booking_eyebrow }}</span>
+      <h2>{{ t.booking_title }}</h2>
+      <p>{{ t.booking_subtitle }}</p>
+
+      <div class="contact-card">
+        <h4>{{ t.contact_info_title }}</h4>
+        <ul>
+          <li>📞 <strong>{% if t.lang_code == 'fa' %}تلفن کلینیک:{% else %}Clinic Phone:{% endif %}</strong> {{ profile.phone }}</li>
+          <li>✉️ <strong>{% if t.lang_code == 'fa' %}ایمیل تماس:{% else %}Email:{% endif %}</strong> {{ profile.email }}</li>
+          <li>📍 <strong>{% if t.lang_code == 'fa' %}نشانی:{% else %}Address:{% endif %}</strong> {% if t.lang_code == 'fa' %}{{ profile.address_fa }}{% else %}{{ profile.address_en }}{% endif %}</li>
+        </ul>
+      </div>
+
+      <div class="contact-card">
+        <h4>{{ t.office_hours_title }}</h4>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">{{ t.office_hours }}</p>
+      </div>
+    </div>
+
+    <!-- Live AJAX Consultation Form -->
+    <div class="form-shell">
+      <div id="formAlert" class="form-alert"></div>
+
+      <form id="consultationForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="client_name">{{ t.form_name }} *</label>
+            <input type="text" id="client_name" name="client_name" required placeholder="{% if t.lang_code == 'fa' %}مثلاً سارا احمدی{% else %}e.g. Jane Doe{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="email">{{ t.form_email }} *</label>
+            <input type="email" id="email" name="email" required placeholder="name@example.com">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">{{ t.form_phone }} *</label>
+            <input type="tel" id="phone" name="phone" required placeholder="{% if t.lang_code == 'fa' %}۰۹۱۲۰۰۰۰۰۰۰{% else %}+1 (555) 000-0000{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="session_format">{{ t.form_format }}</label>
+            <select id="session_format" name="session_format">
+              <option value="Online">{{ t.format_online }}</option>
+              <option value="In-Person">{{ t.format_inperson }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="service_type">{{ t.form_service }}</label>
+            <select id="service_type" name="service_type">
+              <option value="Anxiety & Stress Management">{{ t.spec_1_title }}</option>
+              <option value="Depression & Mood">{{ t.spec_2_title }}</option>
+              <option value="Couples & Relationships">{{ t.spec_3_title }}</option>
+              <option value="Trauma & EMDR">{{ t.spec_4_title }}</option>
+              <option value="Life Transitions">{{ t.spec_5_title }}</option>
+              <option value="General Consultation">{% if t.lang_code == 'fa' %}مشاوره عمومی و ارزیابی{% else %}General Clinical Consultation{% endif %}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="preferred_time">{{ t.form_time }}</label>
+            <select id="preferred_time" name="preferred_time">
+              <option value="Morning">{{ t.time_morning }}</option>
+              <option value="Afternoon">{{ t.time_afternoon }}</option>
+              <option value="Evening">{{ t.time_evening }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="preferred_date">{{ t.form_date }}</label>
+          <input type="date" id="preferred_date" name="preferred_date">
+        </div>
+
+        <div class="form-group">
+          <label for="notes">{{ t.form_notes }}</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="{{ t.form_notes_placeholder }}"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" required>
+            <span>{{ t.form_consent }}</span>
+          </label>
+        </div>
+
+        <button type="submit" id="submitBookingBtn" class="btn btn-primary" style="width: 100%;" data-submitting-text="{{ t.form_submitting }}">
+          {{ t.form_submit }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

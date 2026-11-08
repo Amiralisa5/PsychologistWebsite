@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <linearGradient id="relGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FED7D7" />
+      <stop offset="100%" stop-color="#FEEBC8" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="350" rx="16" fill="url(#relGrad)" />
+  <!-- Overlapping rings of connection -->
+  <circle cx="260" cy="150" r="65" fill="#ED8936" opacity="0.3" />
+  <circle cx="340" cy="150" r="65" fill="#E53E3E" opacity="0.3" />
+  <path d="M 300 135 C 300 120, 315 110, 325 125 C 335 110, 350 120, 350 135 C 350 155, 325 170, 325 175 C 325 170, 300 155, 300 135 Z" fill="#C53030" opacity="0.8" transform="translate(-25, -5)" />
+  <text x="300" y="270" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="600" fill="#9B2C2C">Relational Empathy &amp; Dialogue</text>
+</svg>

@@ -1,0 +1,128 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Edit Therapist Profile{% endblock %}
+
+{% block admin_content %}
+{% if success_msg %}
+<div class="form-alert success" style="display: block; margin-bottom: 1.5rem;">
+  {{ success_msg }}
+</div>
+{% endif %}
+
+<div class="form-shell" style="max-width: 900px; padding: 2.5rem;">
+  <form action="/admin/profile" method="POST">
+    <h3 style="font-size: 1.25rem; font-family: var(--font-sans); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+      Personal &amp; Professional Identity
+    </h3>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name_en">Therapist Name (English) *</label>
+        <input type="text" id="name_en" name="name_en" value="{{ profile.name_en }}" required>
+      </div>
+      <div class="form-group">
+        <label for="name_fa">نام درمانگر (فارسی) *</label>
+        <input type="text" id="name_fa" name="name_fa" value="{{ profile.name_fa }}" required dir="rtl">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="title_en">Professional Title (English) *</label>
+        <input type="text" id="title_en" name="title_en" value="{{ profile.title_en }}" required>
+      </div>
+      <div class="form-group">
+        <label for="title_fa">عنوان حرفه‌ای (فارسی) *</label>
+        <input type="text" id="title_fa" name="title_fa" value="{{ profile.title_fa }}" required dir="rtl">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="years_experience">Years of Clinical Experience</label>
+        <input type="number" id="years_experience" name="years_experience" value="{{ profile.years_experience }}">
+      </div>
+      <div class="form-group">
+        <label for="photo_url">Profile Avatar / Photo URL</label>
+        <input type="text" id="photo_url" name="photo_url" value="{{ profile.photo_url }}">
+      </div>
+    </div>
+
+    <h3 style="font-size: 1.25rem; font-family: var(--font-sans); margin: 2rem 0 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+      Biography &amp; Clinical Approach
+    </h3>
+
+    <div class="form-group">
+      <label for="bio_en">Full Bio (English) *</label>
+      <textarea id="bio_en" name="bio_en" rows="5" required>{{ profile.bio_en }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="bio_fa">بیوگرافی کامل (فارسی) *</label>
+      <textarea id="bio_fa" name="bio_fa" rows="5" required dir="rtl">{{ profile.bio_fa }}</textarea>
+    </div>
+
+    <h3 style="font-size: 1.25rem; font-family: var(--font-sans); margin: 2rem 0 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+      Contact Information &amp; Office Locations
+    </h3>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Public Contact Email</label>
+        <input type="email" id="email" name="email" value="{{ profile.email }}" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Clinic Phone / WhatsApp</label>
+        <input type="tel" id="phone" name="phone" value="{{ profile.phone }}" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="address_en">Clinic Address (English)</label>
+        <input type="text" id="address_en" name="address_en" value="{{ profile.address_en }}">
+      </div>
+      <div class="form-group">
+        <label for="address_fa">نشانی کلینیک (فارسی)</label>
+        <input type="text" id="address_fa" name="address_fa" value="{{ profile.address_fa }}" dir="rtl">
+      </div>
+    </div>
+
+    <h3 style="font-size: 1.25rem; font-family: var(--font-sans); margin: 2rem 0 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+      Credentials &amp; Specializations (Line-separated)
+    </h3>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="credentials_en">Credentials (English, one per line)</label>
+        <textarea id="credentials_en" name="credentials_en" rows="4">{% for c in profile.credentials_en %}{{ c }}
+{% endfor %}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="credentials_fa">مدارک و پروانه‌ها (فارسی، هر مورد در یک خط)</label>
+        <textarea id="credentials_fa" name="credentials_fa" rows="4" dir="rtl">{% for c in profile.credentials_fa %}{{ c }}
+{% endfor %}</textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="specializations_en">Specializations (English, one per line)</label>
+        <textarea id="specializations_en" name="specializations_en" rows="4">{% for s in profile.specializations_en %}{{ s }}
+{% endfor %}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="specializations_fa">تخصص‌ها (فارسی، هر مورد در یک خط)</label>
+        <textarea id="specializations_fa" name="specializations_fa" rows="4" dir="rtl">{% for s in profile.specializations_fa %}{{ s }}
+{% endfor %}</textarea>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <button type="submit" class="btn btn-primary">
+        Save Profile Updates
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

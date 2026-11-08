@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if t.lang_code == 'fa' %}درباره {{ profile.name_fa }} | سوابق و رویکرد درمانی{% else %}About {{ profile.name_en }} | Clinical Background & Philosophy{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 3.5rem;">
+  <div class="container">
+    <div class="welcome-grid" style="align-items: flex-start;">
+      <!-- Therapist Portrait Card -->
+      <div>
+        <div class="hero-image-card" style="max-width: 440px; margin: 0 auto;">
+          <img src="{{ profile.photo_url }}" alt="{% if t.lang_code == 'fa' %}{{ profile.name_fa }}{% else %}{{ profile.name_en }}{% endif %}" class="hero-avatar">
+          
+          <div style="margin-top: 1.5rem; text-align: center;">
+            <h3 style="font-size: 1.4rem;">
+              {% if t.lang_code == 'fa' %}{{ profile.name_fa }}{% else %}{{ profile.name_en }}{% endif %}
+            </h3>
+            <p style="color: var(--primary); font-weight: 600; font-size: 0.95rem; margin-top: 0.25rem;">
+              {% if t.lang_code == 'fa' %}{{ profile.title_fa }}{% else %}{{ profile.title_en }}{% endif %}
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+              📍 {% if t.lang_code == 'fa' %}{{ profile.address_fa }}{% else %}{{ profile.address_en }}{% endif %}
+            </p>
+          </div>
+        </div>
+
+        <div class="contact-card" style="margin-top: 2rem; max-width: 440px; margin-left: auto; margin-right: auto;">
+          <h4>{% if t.lang_code == 'fa' %}ارتباط مستقیم با کلینیک{% else %}Direct Practice Contact{% endif %}</h4>
+          <ul>
+            <li>📞 <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></li>
+            <li>✉️ <a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
+            <li>🕒 {{ t.office_hours }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bio & Credentials -->
+      <div>
+        <span class="eyebrow">{{ t.nav_about }}</span>
+        <h2>
+          {% if t.lang_code == 'fa' %}
+            درمان، سفری است برای شناخت خود و التیام دردهای عمیق.
+          {% else %}
+            Therapy is a collaborative journey toward self-discovery and lasting peace.
+          {% endif %}
+        </h2>
+
+        <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin: 1.5rem 0 2rem;">
+          <p style="margin-bottom: 1.25rem;">
+            {% if t.lang_code == 'fa' %}{{ profile.bio_fa }}{% else %}{{ profile.bio_en }}{% endif %}
+          </p>
+          <p>
+            {% if t.lang_code == 'fa' %}
+              در جلسات درمانی، هدف ما صرفاً حذف نشانه‌های ظاهری رنج نیست؛ بلکه هدف فهمیدن معنای پیام‌هایی است که هیجان‌ها، خستگی‌ها و 
+              اضطراب‌های شما در صدد بازگویی آن هستند. ما با تکیه بر اصول اخلاقی و رازداری مطلق، در کنار شما خواهیم بود تا تعادلی پایدار در زندگی خویش برقرار کنید.
+            {% else %}
+              Our goal in psychotherapy extends beyond temporary symptom suppression. We seek to understand the underlying emotional architecture 
+              of your distress, fostering deeper self-compassion, cognitive flexibility, and authentic relational fulfillment in a strictly confidential setting.
+            {% endif %}
+          </p>
+        </div>
+
+        <!-- Credentials Badges -->
+        <div style="margin-bottom: 2.5rem;">
+          <h4 style="font-size: 1.1rem; margin-bottom: 1rem; color: #111827;">
+            {% if t.lang_code == 'fa' %}مدارک، پروانه‌ها و صلاحیت‌های حرفه‌ای:{% else %}Professional Credentials & Certifications:{% endif %}
+          </h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.65rem;">
+            {% if t.lang_code == 'fa' %}
+              {% for cred in profile.credentials_fa %}
+                <li style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); font-size: 0.95rem;">
+                  <span style="color: var(--primary); font-size: 1.1rem;">✓</span> {{ cred }}
+                </li>
+              {% endfor %}
+            {% else %}
+              {% for cred in profile.credentials_en %}
+                <li style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); font-size: 0.95rem;">
+                  <span style="color: var(--primary); font-size: 1.1rem;">✓</span> {{ cred }}
+                </li>
+              {% endfor %}
+            {% endif %}
+          </ul>
+        </div>
+
+        <!-- Specializations -->
+        <div style="margin-bottom: 2.5rem;">
+          <h4 style="font-size: 1.1rem; margin-bottom: 1rem; color: #111827;">
+            {% if t.lang_code == 'fa' %}حوزه‌های تخصصی فعالیت:{% else %}Core Areas of Specialization:{% endif %}
+          </h4>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+            {% if t.lang_code == 'fa' %}
+              {% for spec in profile.specializations_fa %}
+                <span style="background-color: var(--primary-light); color: var(--primary); padding: 0.4rem 0.9rem; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 600;">
+                  {{ spec }}
+                </span>
+              {% endfor %}
+            {% else %}
+              {% for spec in profile.specializations_en %}
+                <span style="background-color: var(--primary-light); color: var(--primary); padding: 0.4rem 0.9rem; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 600;">
+                  {{ spec }}
+                </span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <a href="/booking?lang={{ t.lang_code }}" class="btn btn-primary">
+            {{ t.hero_cta_primary }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

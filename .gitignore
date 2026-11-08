@@ -3,3 +3,13 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.idea/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+.pytest_cache/
+.DS_Store

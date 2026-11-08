@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if t.lang_code == 'fa' %}خدمات تخصصی روانشناسی و روان‌درمانی{% else %}Clinical Specialties & Therapy Services{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 3.5rem;">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">{{ t.specialties_eyebrow }}</span>
+      <h2>{{ t.specialties_title }}</h2>
+      <p>{{ t.specialties_subtitle }}</p>
+    </div>
+
+    <!-- Grid of detailed services -->
+    <div class="specialties-grid">
+      <article class="spec-card">
+        <div class="spec-icon-box">🌊</div>
+        <h3>{{ t.spec_1_title }}</h3>
+        <p>{{ t.spec_1_desc }}</p>
+        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          {% if t.lang_code == 'fa' %}رویکرد: CBT، تنفس واگال و ذهن‌آگاهی{% else %}Approach: CBT, Somatic & ACT Protocols{% endif %}
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">☀️</div>
+        <h3>{{ t.spec_2_title }}</h3>
+        <p>{{ t.spec_2_desc }}</p>
+        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          {% if t.lang_code == 'fa' %}رویکرد: فعال‌سازی رفتاری و روان‌درمانی بین‌فردی{% else %}Approach: Behavioral Activation & IPT{% endif %}
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🤝</div>
+        <h3>{{ t.spec_3_title }}</h3>
+        <p>{{ t.spec_3_desc }}</p>
+        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          {% if t.lang_code == 'fa' %}رویکرد: زوج‌درمانی هیجان‌مدار (EFT) و گاتمن{% else %}Approach: Emotionally Focused Therapy (EFT){% endif %}
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🕊️</div>
+        <h3>{{ t.spec_4_title }}</h3>
+        <p>{{ t.spec_4_desc }}</p>
+        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          {% if t.lang_code == 'fa' %}رویکرد: پردازش تروما، EMDR و شفقت به خود{% else %}Approach: Trauma Processing & EMDR Integration{% endif %}
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🧭</div>
+        <h3>{{ t.spec_5_title }}</h3>
+        <p>{{ t.spec_5_desc }}</p>
+        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          {% if t.lang_code == 'fa' %}رویکرد: روان‌درمانی اگزیستانسیال و پذیرش و تعهد{% else %}Approach: ACT & Existential Frameworks{% endif %}
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon-box">🧘</div>
+        <h3>{{ t.spec_6_title }}</h3>
+        <p>{{ t.spec_6_desc }}</p>
+        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          {% if t.lang_code == 'fa' %}رویکرد: کاهش استرس مبتنی بر ذهن‌آگاهی (MBSR){% else %}Approach: Mindfulness-Based Stress Reduction{% endif %}
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Frequently Asked Questions -->
+<section class="section section-alt">
+  <div class="container" style="max-width: 860px;">
+    <div class="section-header">
+      <span class="eyebrow">{% if t.lang_code == 'fa' %}پرسش‌های متداول{% else %}Frequently Asked Questions{% endif %}</span>
+      <h2>
+        {% if t.lang_code == 'fa' %}پاسخ به سوالات رایج درباره جلسات درمانی{% else %}Common Questions About Therapy & Consultations{% endif %}
+      </h2>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <details style="background: var(--bg-surface); padding: 1.25rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.05rem; color: #111827; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          <span>{% if t.lang_code == 'fa' %}مدت زمان و ساختار جلسات درمانی چگونه است؟{% else %}How long are therapy sessions and how frequently do we meet?{% endif %}</span>
+          <span style="color: var(--primary); font-size: 1.25rem;">+</span>
+        </summary>
+        <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          {% if t.lang_code == 'fa' %}
+            جلسات فردی معمولاً ۵۰ دقیقه و جلسات زوج‌درمانی ۷۵ دقیقه طول می‌کشد. در آغاز فرایند درمان، جلسات به صورت هفتگی تنظیم می‌شود و به تدریج با بهبود علائم و تثبیت مهارت‌ها، فواصل جلسات افزایش می‌یابد.
+          {% else %}
+            Individual psychotherapy sessions last 50 minutes, while couples counseling sessions are 75 minutes. Typically, meetings occur weekly at a consistent, reserved time slot to ensure momentum and continuity.
+          {% endif %}
+        </p>
+      </details>
+
+      <details style="background: var(--bg-surface); padding: 1.25rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.05rem; color: #111827; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          <span>{% if t.lang_code == 'fa' %}آیا جلسات آنلاین به اندازه جلسات حضوری اثربخش است؟{% else %}Is online teletherapy as effective as in-person therapy?{% endif %}</span>
+          <span style="color: var(--primary); font-size: 1.25rem;">+</span>
+        </summary>
+        <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          {% if t.lang_code == 'fa' %}
+            بله، تحقیقات بالینی متعدد و معتبر اثبات کرده‌اند که روان‌درمانی آنلاین در بسترهای امن تصویری، اثربخشی کاملاً مشابه با جلسات حضوری دارد و امکان بهره‌مندی از درمان را برای هم‌وطنان مقیم خارج یا ساکن سایر شهرها فراهم می‌سازد.
+          {% else %}
+            Yes, extensive clinical research has repeatedly shown that online video teletherapy produces equivalent clinical outcomes to in-person sessions for anxiety, depression, and relationship counseling.
+          {% endif %}
+        </p>
+      </details>
+
+      <details style="background: var(--bg-surface); padding: 1.25rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.05rem; color: #111827; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          <span>{% if t.lang_code == 'fa' %}اصل رازداری در جلسات درمانی چگونه رعایت می‌شود؟{% else %}How is confidentiality protected during our work together?{% endif %}</span>
+          <span style="color: var(--primary); font-size: 1.25rem;">+</span>
+        </summary>
+        <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          {% if t.lang_code == 'fa' %}
+            رازداری مهم‌ترین اصل اخلاقی روانشناسی است. تمامی اطلاعات مطرح‌شده در جلسات و پرونده‌های درمانی تحت استانداردهای اخلاقی سازمان نظام روانشناسی کاملاً محرمانه باقی می‌ماند و بدون رضایت کتبی مراجع به هیچ فرد یا نهادی ارائه نخواهد شد.
+          {% else %}
+            Confidentiality is the cornerstone of effective clinical practice. All notes, communications, and session content are kept strictly confidential in accordance with professional ethical codes and applicable health privacy laws.
+          {% endif %}
+        </p>
+      </details>
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem;">
+      <a href="/booking?lang={{ t.lang_code }}" class="btn btn-primary">
+        {{ t.hero_cta_primary }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

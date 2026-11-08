@@ -1,0 +1,162 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block admin_content %}
+<!-- Metrics Cards Grid -->
+<div class="metrics-grid">
+  <div class="metric-card">
+    <h4>Pending Inquiries</h4>
+    <div class="metric-value" style="color: #d97706;">{{ stats.pending_count }}</div>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Require review or scheduling</p>
+  </div>
+
+  <div class="metric-card">
+    <h4>Confirmed Sessions</h4>
+    <div class="metric-value" style="color: var(--primary);">{{ stats.confirmed_count }}</div>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Active upcoming clients</p>
+  </div>
+
+  <div class="metric-card">
+    <h4>Total Inquiries</h4>
+    <div class="metric-value">{{ stats.total_appointments }}</div>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">All consultation submissions</p>
+  </div>
+
+  <div class="metric-card">
+    <h4>Published Articles</h4>
+    <div class="metric-value" style="color: #2563eb;">{{ stats.articles_count }}</div>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Self-care &amp; clinical guides</p>
+  </div>
+</div>
+
+<!-- Recent Appointments Table -->
+<div style="margin-bottom: 2.5rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h3 style="font-size: 1.2rem; font-family: var(--font-sans);">Recent Consultation Inquiries</h3>
+    <a href="/admin/appointments" class="btn btn-outline btn-sm">View All Requests →</a>
+  </div>
+
+  <div class="data-table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Client Name</th>
+          <th>Contact</th>
+          <th>Service Focus</th>
+          <th>Format</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appt in recent_appointments %}
+        <tr>
+          <td>
+            <strong>{{ appt.client_name }}</strong>
+            {% if appt.language_used == 'fa' %}
+              <span style="font-size: 0.75rem; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">FA</span>
+            {% else %}
+              <span style="font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">EN</span>
+            {% endif %}
+          </td>
+          <td>
+            <div>✉️ {{ appt.email }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">📞 {{ appt.phone }}</div>
+          </td>
+          <td>{{ appt.service_type }}</td>
+          <td>
+            <span style="font-size: 0.82rem; font-weight: 500;">
+              {% if appt.session_format == 'Online' %}🌐 Online{% else %}🏢 In-Person{% endif %}
+            </span>
+          </td>
+          <td>
+            <span class="status-pill status-{{ appt.status | lower }}">
+              ● {{ appt.status }}
+            </span>
+          </td>
+          <td style="color: var(--text-muted); font-size: 0.82rem;">
+            {{ appt.created_at.strftime('%Y-%m-%d %H:%M') }}
+          </td>
+          <td>
+            <button type="button" class="btn btn-outline btn-sm"
+              onclick="openAppointmentModal(
+                {{ appt.id }},
+                '{{ appt.client_name | escape }}',
+                '{{ appt.email | escape }}',
+                '{{ appt.phone | escape }}',
+                '{{ appt.service_type | escape }}',
+                '{{ appt.session_format | escape }}',
+                '{{ appt.preferred_date or '' }}',
+                '{{ appt.preferred_time or '' }}',
+                '{{ (appt.notes or '') | escape }}',
+                '{{ appt.status }}',
+                '{{ (appt.therapist_notes or '') | escape }}'
+              )">
+              Details &amp; Notes
+            </button>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+            No inquiries recorded yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal for Appointment Details & Therapist Notes -->
+<div class="modal-overlay" id="appointmentModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 style="font-size: 1.15rem; font-family: var(--font-sans); margin: 0;">Consultation Details &amp; Notes</h3>
+      <button type="button" id="closeApptModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    </div>
+
+    <form id="apptNotesForm">
+      <div class="modal-body">
+        <input type="hidden" id="modalApptId" name="id">
+
+        <div style="background-color: var(--bg-alt); padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.9rem;">
+            <div><strong>Client:</strong> <span id="modalClientName"></span></div>
+            <div><strong>Email:</strong> <span id="modalClientEmail"></span></div>
+            <div><strong>Phone:</strong> <span id="modalClientPhone"></span></div>
+            <div><strong>Format:</strong> <span id="modalFormat"></span></div>
+            <div><strong>Service:</strong> <span id="modalService"></span></div>
+            <div><strong>Date &amp; Time:</strong> <span id="modalDateTime"></span></div>
+          </div>
+          <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+            <strong style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Client Message / What brings them:</strong>
+            <p id="modalClientNotes" style="font-size: 0.92rem; color: var(--text-main); font-style: italic; margin: 0;"></p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="modalApptStatus">Update Appointment Status</label>
+          <select id="modalApptStatus" name="status">
+            <option value="Pending">Pending Review</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="modalTherapistNotes">Therapist Internal Notes (Private to you)</label>
+          <textarea id="modalTherapistNotes" name="therapist_notes" rows="4" placeholder="Record confidential clinical observations, session dates, fee agreements, or follow-up tasks..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

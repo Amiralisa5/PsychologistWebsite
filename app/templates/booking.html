@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if t.lang_code == 'fa' %}رزرو نوبت مشاوره و روان‌درمانی | {{ profile.name_fa }}{% else %}Book a Consultation | {{ profile.name_en }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 3.5rem;">
+  <div class="container booking-grid">
+    <div class="booking-info">
+      <span class="eyebrow">{{ t.booking_eyebrow }}</span>
+      <h2>{{ t.booking_title }}</h2>
+      <p>{{ t.booking_subtitle }}</p>
+
+      <div class="contact-card">
+        <h4>{{ t.contact_info_title }}</h4>
+        <ul>
+          <li>📞 <strong>{% if t.lang_code == 'fa' %}شماره مستقیم:{% else %}Direct Phone:{% endif %}</strong> <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></li>
+          <li>✉️ <strong>{% if t.lang_code == 'fa' %}ایمیل مطب:{% else %}Office Email:{% endif %}</strong> <a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
+          <li>📍 <strong>{% if t.lang_code == 'fa' %}نشانی حضوری:{% else %}In-Person Address:{% endif %}</strong> {% if t.lang_code == 'fa' %}{{ profile.address_fa }}{% else %}{{ profile.address_en }}{% endif %}</li>
+        </ul>
+      </div>
+
+      <div class="contact-card">
+        <h4>{{ t.office_hours_title }}</h4>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">{{ t.office_hours }}</p>
+      </div>
+
+      <div style="background-color: var(--primary-light); padding: 1.25rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--secondary); color: var(--primary-hover); font-size: 0.9rem; line-height: 1.6;">
+        🛡️ <strong>{% if t.lang_code == 'fa' %}تضمین رازداری حرفه‌ای:{% else %}Professional Confidentiality Guarantee:{% endif %}</strong>
+        <p style="margin-top: 0.35rem; margin-bottom: 0;">
+          {% if t.lang_code == 'fa' %}
+            تمامی ارتباطات و اطلاعات هویتی شما مطابق با اصول اخلاقی روانشناسی کاملاً محرمانه تلقی می‌شوند.
+          {% else %}
+            All your communications and scheduling details are handled with strict clinical confidentiality.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Live AJAX Consultation Form -->
+    <div class="form-shell">
+      <div id="formAlert" class="form-alert"></div>
+
+      <form id="consultationForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="client_name">{{ t.form_name }} *</label>
+            <input type="text" id="client_name" name="client_name" required placeholder="{% if t.lang_code == 'fa' %}مثلاً سارا احمدی{% else %}e.g. Jane Doe{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="email">{{ t.form_email }} *</label>
+            <input type="email" id="email" name="email" required placeholder="name@example.com">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">{{ t.form_phone }} *</label>
+            <input type="tel" id="phone" name="phone" required placeholder="{% if t.lang_code == 'fa' %}۰۹۱۲۰۰۰۰۰۰۰{% else %}+1 (555) 000-0000{% endif %}">
+          </div>
+          <div class="form-group">
+            <label for="session_format">{{ t.form_format }}</label>
+            <select id="session_format" name="session_format">
+              <option value="Online">{{ t.format_online }}</option>
+              <option value="In-Person">{{ t.format_inperson }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="service_type">{{ t.form_service }}</label>
+            <select id="service_type" name="service_type">
+              <option value="Anxiety & Stress Management">{{ t.spec_1_title }}</option>
+              <option value="Depression & Mood">{{ t.spec_2_title }}</option>
+              <option value="Couples & Relationships">{{ t.spec_3_title }}</option>
+              <option value="Trauma & EMDR">{{ t.spec_4_title }}</option>
+              <option value="Life Transitions">{{ t.spec_5_title }}</option>
+              <option value="General Consultation">{% if t.lang_code == 'fa' %}مشاوره عمومی و ارزیابی{% else %}General Clinical Consultation{% endif %}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="preferred_time">{{ t.form_time }}</label>
+            <select id="preferred_time" name="preferred_time">
+              <option value="Morning">{{ t.time_morning }}</option>
+              <option value="Afternoon">{{ t.time_afternoon }}</option>
+              <option value="Evening">{{ t.time_evening }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="preferred_date">{{ t.form_date }}</label>
+          <input type="date" id="preferred_date" name="preferred_date">
+        </div>
+
+        <div class="form-group">
+          <label for="notes">{{ t.form_notes }}</label>
+          <textarea id="notes" name="notes" rows="4" placeholder="{{ t.form_notes_placeholder }}"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" required>
+            <span>{{ t.form_consent }}</span>
+          </label>
+        </div>
+
+        <button type="submit" id="submitBookingBtn" class="btn btn-primary" style="width: 100%;" data-submitting-text="{{ t.form_submitting }}">
+          {{ t.form_submit }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

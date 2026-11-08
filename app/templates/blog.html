@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if t.lang_code == 'fa' %}دانشنامه و مقالات سلامت روان | {{ profile.name_fa }}{% else %}Mental Health Articles & Insights | {{ profile.name_en }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 3.5rem;">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">{{ t.articles_eyebrow }}</span>
+      <h2>{{ t.articles_title }}</h2>
+      <p>{{ t.articles_subtitle }}</p>
+    </div>
+
+    <!-- Category Filters -->
+    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 3rem;">
+      <a href="/blog?lang={{ t.lang_code }}" class="btn btn-outline btn-sm {% if not current_cat %}btn-primary{% endif %}">
+        {{ t.filter_all }}
+      </a>
+      {% for cat in categories %}
+      <a href="/blog?lang={{ t.lang_code }}&category={{ cat }}" class="btn btn-outline btn-sm {% if current_cat == cat %}btn-primary{% endif %}">
+        {{ cat }}
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="articles-grid">
+      {% for article in articles %}
+      <article class="article-card">
+        <img src="{{ article.featured_image }}" alt="{% if t.lang_code == 'fa' %}{{ article.title_fa }}{% else %}{{ article.title_en }}{% endif %}" class="article-image">
+        <div class="article-content">
+          <div class="article-meta">
+            <span class="article-category">{{ article.category }}</span>
+            <span>⏱️ {{ article.read_time }} {{ t.read_time_suffix }}</span>
+          </div>
+          <h3 class="article-title">
+            <a href="/blog/{{ article.slug }}?lang={{ t.lang_code }}">
+              {% if t.lang_code == 'fa' %}{{ article.title_fa }}{% else %}{{ article.title_en }}{% endif %}
+            </a>
+          </h3>
+          <p class="article-excerpt">
+            {% if t.lang_code == 'fa' %}{{ article.excerpt_fa }}{% else %}{{ article.excerpt_en }}{% endif %}
+          </p>
+          <a href="/blog/{{ article.slug }}?lang={{ t.lang_code }}" class="btn btn-outline btn-sm" style="align-self: flex-start;">
+            {{ t.read_more }} {% if t.dir == 'rtl' %}←{% else %}→{% endif %}
+          </a>
+        </div>
+      </article>
+      {% else %}
+      <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 3rem 0;">
+        {% if t.lang_code == 'fa' %}مقاله‌ای در این دسته‌بندی یافت نشد.{% else %}No articles found in this category.{% endif %}
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
