@@ -4,6 +4,10 @@ from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
 from app.database import Base
 
 
+def utcnow():
+    return datetime.datetime.now(datetime.timezone.utc)
+
+
 class AdminUser(Base):
     __tablename__ = "admin_users"
 
@@ -12,7 +16,7 @@ class AdminUser(Base):
     password_hash = Column(String(256), nullable=False)
     salt = Column(String(64), nullable=False)
     role = Column(String(50), default="admin")
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
 
 class TherapistProfile(Base):
@@ -41,7 +45,7 @@ class TherapistProfile(Base):
     address_en = Column(String(300), default="Suite 402, North Kargar Ave, Tehran / Online Worldwide")
     address_fa = Column(String(300), default="تهران، خیابان کارگر شمالی، ساختمان پزشکان، واحد ۴۰۲ / جلسات آنلاین بین‌المللی")
     photo_url = Column(String(300), default="/static/images/dr-hassan-aghanasiri.jpg")
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow)
 
     @property
     def specializations_en(self):
@@ -103,7 +107,7 @@ class AppointmentRequest(Base):
     status = Column(String(50), default="Pending")  # Pending, Confirmed, Completed, Cancelled
     therapist_notes = Column(Text, nullable=True)
     language_used = Column(String(10), default="en")  # en or fa
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
 
 
 class Article(Base):
@@ -129,8 +133,8 @@ class Article(Base):
     instagram_posted = Column(Boolean, default=False)
     instagram_post_id = Column(String(100), nullable=True)
     
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utcnow)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow)
 
 
 class SocialSettings(Base):
@@ -151,5 +155,5 @@ class SocialSettings(Base):
     instagram_page_handle = Column(String(100), default="dasein.journal")
     instagram_auto_publish = Column(Boolean, default=False)
 
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow)
 

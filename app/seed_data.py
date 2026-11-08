@@ -264,11 +264,98 @@ def seed_database():
                 read_time=7,
                 featured_image="/static/images/article-default.svg",
                 published=True
+            ),
+            Article(
+                slug="psychology-and-tarikh-e-beyhaqi-classical-literature",
+                title_en="Psychological Analysis of Classical Persian Literature: Psychology & Tarikh-e Beyhaqi",
+                title_fa="بررسی آثار ادبیات کلاسیک فارسی بر اساس نظریات روان‌شناسی: مجموعه‌ی «روان‌شناسی و تاریخ بیهقی»",
+                excerpt_en="A psychological inquiry into the characters, anxiety typologies, and defense mechanisms in classical Persian literature through the lens of Tarikh-e Beyhaqi.",
+                excerpt_fa="تحلیل و بررسی عمیق ساختار روانی، لایه‌های شخصیتی، گونه‌شناسی اضطراب و مکانیسم‌های دفاعی در تاریخ بیهقی از منظر مکاتب نوین روان‌شناسی و روانکاوی.",
+                content_en=(
+                    "## Classical Literature Through a Psychological Lens\n\n"
+                    "Published as part of the **Dasein Journal** research series (Instagram [@dasein.journal](https://instagram.com/dasein.journal) & Telegram [@dasein_journal](https://t.me/dasein_journal)), "
+                    "this study explores how ancient historical narratives reflect eternal structures of the human psyche.\n\n"
+                    "Abu'l-Fadl Bayhaqi's masterpiece is not merely a chronicle of Ghaznavid court intrigues; it is an extraordinary psychological document illustrating power neurosis, narcissistic vulnerability, and existential terror.\n\n"
+                    "### Core Analytical Themes\n\n"
+                    "1. **Typology of Anxiety & Defense Mechanisms**: Analyzing how historical figures used projection, reaction formation, and denial to manage political and existential dread.\n"
+                    "2. **Psycholinguistics of Bayhaqi's Prose**: How deliberate syntactic rhythms and word choices mirror emotional suppression and psychological tension.\n"
+                    "3. **Neo-Freudian Personality Characterization**: Exploring the relational complexes and narcissistic wounds of rulers and ministers.\n"
+                    "4. **Kohlberg's Stages of Moral Development**: Mapping the ethical dilemmas and moral development stages of pivotal historical figures.\n\n"
+                    "### 📎 Scientific Research Papers & Sources (Available on Telegram Channel)\n\n"
+                    "- [**گونه‌شناسی اضطراب و مکانیسم‌های دفاعی (PDF)**](https://t.me/dasein_journal/14) — 1.5 MB\n"
+                    "- [**روانشناسی زبان تاریخ بیهقی (PDF)**](https://t.me/dasein_journal/15) — 1.4 MB\n"
+                    "- [**نقد روانکاوانه شخصیت‌ها بر اساس مکتب نوفرویدی (PDF)**](https://t.me/dasein_journal/16) — 451 KB\n"
+                    "- [**بررسی تاریخ بیهقی بر اساس نظریه رشد اخلاقی کلبرگ (PDF)**](https://t.me/dasein_journal/17) — 1.3 MB\n"
+                    "- [**روانشناسی در تاریخ بیهقی — رساله جامع (PDF)**](https://t.me/dasein_journal/18) — 5.5 MB\n"
+                ),
+                content_fa=(
+                    "## بازخوانی ادبیات کهن با نگاه روان‌شناختی\n\n"
+                    "این مقاله برگرفته از مجموعه پژوهشی اختصاصی **ژورنال دازاین** (منتشرشده در اینستاگرام [@dasein.journal](https://instagram.com/dasein.journal) و تلگرام [@dasein_journal](https://t.me/dasein_journal)) است که به تحلیل پیوند ادبیات کلاسیک و ساختارهای روانی انسان می‌پردازد.\n\n"
+                    "شاهکار ابوالفضل بیهقی صرفاً تاریخ‌نگاری وقایع دربار غزنوی نیست؛ بلکه بستری کم‌نظیر برای کالبدشکافی تعارضات درونی، عقده‌های روانی، و تجلی «اضطراب مرگ و قدرت» در بستر مناسبات انسانی است.\n\n"
+                    "### محورهای تحلیلی مجموعه\n\n"
+                    "۱. **گونه‌شناسی اضطراب و مکانیسم‌های دفاعی**: بررسی نحوه واکنش دولتمردان و وزرا به تهدیدهای محیطی از طریق برون‌فکنی، واپس‌رانی و واکنش وارونه.\n"
+                    "۲. **روان‌شناسی زبان نثر بیهقی**: چگونه سکوت‌ها، مکث‌ها و ایجاز زبان بیهقی، حامل سرکوب‌های هیجانی راوی و اضطراب محیط است.\n"
+                    "۳. **نقد روانکاوانه بر پایه مکاتب نوفرویدی**: تحلیل نیازهای روان‌رنجورانه به قدرت و تأیید، و آسیب‌پذیری‌های خودشیفتگی در چهره‌های تاریخی.\n"
+                    "۴. **سنجش مراحل رشد اخلاقی کلبرگ**: تحلیل دوراهی‌های اخلاقی و مرز میان مصلحت‌سنجی ترسو و شجاعت اخلاقی اصیل.\n\n"
+                    "### 📎 مقالات علمی و منابع پژوهشی کامل (قابل دریافت از کانال تلگرام دازاین)\n\n"
+                    "- [**گونه‌شناسی اضطراب و مکانیسم‌های دفاعی (PDF)**](https://t.me/dasein_journal/14) — حجم: ۱.۵ مگابایت\n"
+                    "- [**روانشناسی زبان تاریخ بیهقی (PDF)**](https://t.me/dasein_journal/15) — حجم: ۱.۴ مگابایت\n"
+                    "- [**نقد روانکاوانه شخصیت‌ها بر اساس مکتب نوفرویدی (PDF)**](https://t.me/dasein_journal/16) — حجم: ۴۵۱ کیلوبایت\n"
+                    "- [**بررسی تاریخ بیهقی بر اساس نظریه رشد اخلاقی کلبرگ (PDF)**](https://t.me/dasein_journal/17) — حجم: ۱.۳ مگابایت\n"
+                    "- [**روانشناسی در تاریخ بیهقی — رساله جامع (PDF)**](https://t.me/dasein_journal/18) — حجم: ۵.۵ مگابایت\n"
+                ),
+                category="Literature & Psychoanalysis",
+                read_time=10,
+                featured_image="/static/images/article-beyhaqi.svg",
+                published=True,
+                telegram_posted=True,
+                telegram_post_id="3",
+                instagram_posted=True,
+                instagram_post_id="carousel_1"
+            ),
+            Article(
+                slug="grief-soog-psychology-philosophy-iranian-rituals",
+                title_en="Grief (Soog): Perspectives from Psychology, Philosophy, and Iranian Cultural Rituals",
+                title_fa="«سوگ» از دیدگاه روان، فلسفه، آیین و رسوم ایرانی",
+                excerpt_en="Dissecting grief and bereavement: psychological mourning processes, cultural rituals, archetypes in Ferdowsi's Shahnameh, and existential integration.",
+                excerpt_fa="کالبدشکافی پدیده سوگ و ماتم، فرآیند التیام روانی، کهن‌الگوهای اندوه در شاهنامه فردوسی و مقایسه آیین‌های سوگواری سنتی با نظریات اگزیستانسیال.",
+                content_en=(
+                    "## The Universality and Cultural Specificity of Grief\n\n"
+                    "Published as part of the **Dasein Journal** publication series on Instagram ([@dasein.journal](https://instagram.com/dasein.journal)) and Telegram ([@dasein_journal](https://t.me/dasein_journal)).\n\n"
+                    "Grief is one of the most fundamental existential givens. While modern psychiatry often medicalizes bereavement into depressive syndromes, Iranian philosophical and literary traditions have long understood mourning as an active, sacred psychological passage.\n\n"
+                    "### The Mourning Archetypes in Shahnameh\n\n"
+                    "In Ferdowsi's Shahnameh (such as the tragedy of Sohrab or Siavash), mourning is not a passive surrender; it is a ritualized communal catharsis that allows the collective psyche to endure the unbearable weight of mortality.\n\n"
+                    "### Integrating Grief in Existential Therapy\n\n"
+                    "- **Moving past 'closure'**: Acceptance does not mean forgetting; it means integrating the loss into one's enduring narrative.\n"
+                    "- **The role of cultural ritual**: Why communal gathering and somatic expressions of sorrow protect against complicated, disenfranchised grief.\n\n"
+                    "### 📎 Scientific Research Paper (Available on Telegram)\n\n"
+                    "- [**تحلیل ساختاری سوگ با سوگ‌نگاره شاهنامه (PDF)**](https://t.me/dasein_journal/22) — 1.1 MB\n"
+                ),
+                content_fa=(
+                    "## جهان‌شمولی و هویت فرهنگی سوگ\n\n"
+                    "این مقاله بازتابی از پژوهش منتشرشده در **ژورنال دازاین** (اینستاگرام [@dasein.journal](https://instagram.com/dasein.journal) و تلگرام [@dasein_journal](https://t.me/dasein_journal)) است.\n\n"
+                    "سوگ (Mourning) رویارویی ناگزیر انسان با یکی از چهار دلواپسی غایی وجودی یعنی «مرگ و فقدان» است. در حالی که روانپزشکی غرب گاه سوگ را به نشانه‌های افسردگی فرو می‌کاهد، سنت فرهنگی، فلسفی و اسطوره‌ای ایران سوگ را یک «گذار روانی مقدس» و پیوندی عمیق میان فرد و جامعه می‌داند.\n\n"
+                    "### سوگ‌نگاره‌های شاهنامه و کهن‌الگوهای روانی\n\n"
+                    "در سوگ‌سروده‌های شاهنامه فردوسی (نظیر سوگ سیاوش و سهراب)، سوگواری تنها یک واکنش انفعالی نیست؛ بلکه آیینی جمعی برای تخلیه بار هیجانی، معنابخشی مجدد به رنج، و پیشگیری از فرورفتن فرد در انزوای مالیخولیا (Melancholia) است.\n\n"
+                    "### التیام سوگ در روان‌درمانی اگزیستانسیال\n\n"
+                    "۱. **فراتر از توهم «فراموشی»**: درمان سوگ فراموش کردن عزیز از دست رفته نیست، بلکه بازآفرینی رابطه درونی با او و گنجاندن فقدان در تاروپود هویت جدید است.\n"
+                    "۲. **کارکرد آیین‌ها**: چگونه رسوم سوگواری اصیل ایرانی از تبدیل شدن سوگ طبیعی به سوگ بیمارگون و یخ‌زده محافظت می‌کنند.\n\n"
+                    "### 📎 مقاله علمی و پژوهشی کامل (قابل دریافت از کانال تلگرام دازاین)\n\n"
+                    "- [**تحلیل ساختاری سوگ با سوگ‌نگاره شاهنامه (PDF)**](https://t.me/dasein_journal/22) — حجم: ۱.۱ مگابایت\n"
+                ),
+                category="Grief & Existential Loss",
+                read_time=8,
+                featured_image="/static/images/article-grief.svg",
+                published=True,
+                telegram_posted=True,
+                telegram_post_id="19",
+                instagram_posted=True,
+                instagram_post_id="carousel_2"
             )
         ]
         for art in articles:
             db.add(art)
-        print("Seeded 5 authentic articles from Dr. Hassan Agha Nasiri / Dasein Journal")
+        print("Seeded 7 authentic articles from Dr. Hassan Agha Nasiri / Dasein Journal")
 
         # 4. Initial Sample Appointments for Admin view
         if db.query(AppointmentRequest).count() == 0:

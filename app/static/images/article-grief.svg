@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <linearGradient id="griefGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E8FF" />
+      <stop offset="100%" stop-color="#D8B4FE" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="350" rx="16" fill="url(#griefGrad)" />
+  <circle cx="300" cy="165" r="90" fill="#A855F7" opacity="0.2" />
+  <circle cx="300" cy="165" r="55" fill="#9333EA" opacity="0.25" />
+  <!-- Gentle leaf / teardrop turning into blossom -->
+  <path d="M 300 120 C 270 160, 260 190, 300 215 C 340 190, 330 160, 300 120 Z" fill="#6B21A8" opacity="0.75" />
+  <circle cx="300" cy="175" r="12" fill="#FAF5FF" />
+  <text x="300" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="600" fill="#581C87">Grief, Philosophy &amp; Iranian Rituals</text>
+  <text x="300" y="306" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="500" fill="#6B21A8">سوگ، فلسفه و رسوم ایرانی</text>
+</svg>

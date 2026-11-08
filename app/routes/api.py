@@ -42,6 +42,7 @@ def get_current_admin(request: Request):
 
 
 @router.post("/appointments/book")
+@router.post("/appointments")
 def book_consultation(data: BookingRequestSchema, db: Session = Depends(get_db)):
     if not data.client_name.strip() or not data.phone.strip():
         raise HTTPException(status_code=400, detail="Name and phone number are required.")
@@ -126,3 +127,26 @@ def delete_article(
     db.commit()
 
     return {"success": True, "id": id}
+
+
+@router.get("/articles")
+def list_articles(db: Session = Depends(get_db)):
+    articles = db.query(Article).filter(Article.published == True).order_by(Article.created_at.desc()).all()
+    return [
+        {
+            "id": a.id,
+            "slug": a.slug,
+            "title_en": a.title_en,
+            "title_fa": a.title_fa,
+            "excerpt_en": a.excerpt_en,
+            "excerpt_fa": a.excerpt_fa,
+            "category": a.category,
+            "read_time": a.read_time,
+            "featured_image": a.featured_image,
+            "published": a.published,
+            "telegram_posted": a.telegram_posted,
+            "instagram_posted": a.instagram_posted,
+            "created_at": a.created_at.isoformat() if a.created_at else None
+        }
+        for a in articles
+    ]
