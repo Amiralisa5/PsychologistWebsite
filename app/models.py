@@ -122,5 +122,34 @@ class Article(Base):
     featured_image = Column(String(300), default="/static/images/article-default.svg")
     published = Column(Boolean, default=True)
     views_count = Column(Integer, default=0)
+    
+    # Social channels tracking
+    telegram_posted = Column(Boolean, default=False)
+    telegram_post_id = Column(String(100), nullable=True)
+    instagram_posted = Column(Boolean, default=False)
+    instagram_post_id = Column(String(100), nullable=True)
+    
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+
+class SocialSettings(Base):
+    __tablename__ = "social_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Telegram Bot Settings
+    telegram_enabled = Column(Boolean, default=False)
+    telegram_bot_token = Column(String(200), default="")
+    telegram_channel_id = Column(String(100), default="@dasein_journal")
+    telegram_auto_publish = Column(Boolean, default=True)
+
+    # Instagram Graph API Settings
+    instagram_enabled = Column(Boolean, default=False)
+    instagram_account_id = Column(String(100), default="")
+    instagram_access_token = Column(Text, default="")
+    instagram_page_handle = Column(String(100), default="dasein.journal")
+    instagram_auto_publish = Column(Boolean, default=False)
+
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
