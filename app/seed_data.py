@@ -1,7 +1,7 @@
 import datetime
 import json
 from app.database import Base, engine, SessionLocal
-from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article
+from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article, SocialSettings
 from app.auth import hash_password
 
 
@@ -22,6 +22,23 @@ def seed_database():
             )
             db.add(admin)
             print("Created default admin user: admin / psychologist2026")
+
+        # 1.5 Social Settings
+        social = db.query(SocialSettings).first()
+        if not social:
+            social = SocialSettings(
+                telegram_enabled=True,
+                telegram_bot_token="",
+                telegram_channel_id="@dasein_journal",
+                telegram_auto_publish=True,
+                instagram_enabled=True,
+                instagram_account_id="",
+                instagram_access_token="",
+                instagram_page_handle="dasein.journal",
+                instagram_auto_publish=False
+            )
+            db.add(social)
+            print("Created default SocialSettings record")
 
         # 2. Therapist Profile
         profile = db.query(TherapistProfile).first()
@@ -86,145 +103,172 @@ def seed_database():
         profile.photo_url = "/static/images/dr-hassan-aghanasiri.jpg"
         print("Configured therapist profile for Dr. Hassan Agha Nasiri (Dasein Journal)")
 
-        # 3. Initial Articles (Bilingual)
-        if db.query(Article).count() == 0:
-            articles = [
-                Article(
-                    slug="understanding-anxiety-nervous-system-grounding",
-                    title_en="Understanding Anxiety: Why Your Nervous System Reacts and How to Ground It",
-                    title_fa="درک اضطراب: چرا سیستم عصبی ما واکنش نشان می‌دهد و چگونه به آرامش برسیم؟",
-                    excerpt_en="Anxiety is not a character flaw—it is a survival mechanism of the autonomic nervous system. Learn how to recognize somatic triggers and cultivate soothing anchors.",
-                    excerpt_fa="اضطراب نقص در شخصیت نیست، بلکه سازوکار کهن سیستم عصبی خودمختار برای محافظت از ماست. راهکارهای علمی برای بازگرداندن سیستم عصبی به حالت ایمن را بیاموزید.",
-                    content_en=(
-                        "## The Biology of the Anxious Response\n\n"
-                        "When your brain perceives a potential threat—whether it is a difficult conversation, work burnout, "
-                        "or financial uncertainty—the amygdala sounds an alarm. Your sympathetic nervous system triggers the "
-                        "classic 'fight, flight, or freeze' cascade: heart rate increases, breathing becomes shallow, and thoughts race.\n\n"
-                        "In therapy, our first step is normalizing this bodily response. You are not 'broken'; your alarm system is "
-                        "simply oversensitive.\n\n"
-                        "### 3 Concrete Grounding Techniques\n\n"
-                        "1. **The 4-7-8 Breathing Cycle**: Inhale quietly through your nose for 4 counts, hold for 7, and exhale completely "
-                        "through your mouth with a whoosh sound for 8. Repeat for 4 cycles to stimulate the vagus nerve.\n"
-                        "2. **5-4-3-2-1 Sensory Reset**: Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste.\n"
-                        "3. **Cognitive Defusion**: Instead of saying 'I am going to fail', reframe it as: 'I notice my mind is offering me the thought that I might fail.'"
-                    ),
-                    content_fa=(
-                        "## زیست‌شناسی واکنش اضطرابی\n\n"
-                        "هنگامی که مغز تهدیدی را ادراک می‌کند—خواه یک گفتگوی دشوار کاری باشد یا نگرانی‌های مالی—بخش آمیگدال زنگ خطر را به صدا "
-                        "درمی‌آورد. سیستم عصبی سمپاتیک وارد حالت «جنگ، گریز یا انجماد» می‌شود: ضربان قلب بالا می‌رود، تنفس سطحی می‌شود و "
-                        "نشخوار فکری اوج می‌گیرد.\n\n"
-                        "در روان‌درمانی، گام نخست عادی‌سازی این واکنش بدنی است. شما دچار نقص نیستید؛ بلکه سیستم هشدار شما نیازمند تنظیم مجدد است.\n\n"
-                        "### ۳ تکنیک ملموس برای آرام‌سازی و رهایی از تنش\n\n"
-                        "۱. **الگوی تنفس آرام‌بخش (۴-۷-۸)**: به مدت ۴ شماره از بینی دم بگیرید، ۷ شماره نفس را نگه دارید و در ۸ شماره به آرامی از دهان بازدم کنید. این الگو عصب واگ را فعال می‌کند.\n"
-                        "۲. **تکنیک حسی ۵-۴-۳-۲-۱**: ۵ شیء را ببینید، ۴ حس لامسه را لمس کنید، ۳ صدا را بشنوید، ۲ بو را حس کنید و ۱ طعم را مزمزه کنید تا ذهن به زمان حال بازگردد.\n"
-                        "۳. **جداسازی شناختی**: به جای گفتن «من در این کار شکست می‌خورم»، به خود بگویید: «من متوجه هستم که ذهنم در حال تولید فکر شکست است»."
-                    ),
-                    category="Anxiety & Stress",
-                    read_time=6,
-                    featured_image="/static/images/article-anxiety.svg",
-                    published=True
+        # 3. Authentic Articles by Dr. Hassan Agha Nasiri (Dasein Journal)
+        # Clear existing or ensure authentic ones exist
+        db.query(Article).delete()
+        articles = [
+            Article(
+                slug="individual-migration-collective-trauma",
+                title_en="Individual Migration, Collective Trauma: The Unspoken Psychological Architecture of Displacement",
+                title_fa="مهاجرت یک نفره، ترومای دسته‌جمعی: واکاوی ابعاد روان‌شناختی مهاجرت و غربت",
+                excerpt_en="Migration is often celebrated as an individual victory, but beneath lies an existential rupture—an ambiguous loss that echoes across families, relationships, and identity.",
+                excerpt_fa="مهاجرت اغلب به عنوان یک دستاورد فردی نگریسته می‌شود، اما در لایه‌های پنهان روان، با گسستی اگزیستانسیال و سوگی مبهم همراه است که تمام پیوندهای عاطفی و هویتی را دگرگون می‌سازد.",
+                content_en=(
+                    "## The Mirage of Solitary Departure\n\n"
+                    "When a person packs their life into two suitcases and crosses borders, society tends to view the event through the lens of individual triumph or career advancement. "
+                    "However, in existential clinical psychotherapy, we observe that no migration is ever truly solitary.\n\n"
+                    "Every migrant carries the phantom weight of those left behind. In psychoanalytic terms, this creates an **ambiguous loss**—a state of mourning without a funeral, where the homeland remains alive yet out of reach.\n\n"
+                    "### The Split Self: Living in Two Time Zones\n\n"
+                    "Migrants frequently describe a pervasive sensation of psychological dissonance:\n"
+                    "- **Temporal Bifurcation**: The body resides in London, Berlin, or Toronto, but the autonomic nervous system remains tethered to Tehran.\n"
+                    "- **Survivor's Guilt**: An ongoing, low-grade guilt whenever enjoying stability, safety, or rest, knowing loved ones back home face instability.\n"
+                    "- **Loss of Relational Mirroring**: The loss of subtle cultural nuances, shared humor, and the comfort of speaking in one's mother tongue without translation filters.\n\n"
+                    "### The Therapeutic Path: From Fragmentation to Integration\n\n"
+                    "Healing does not require severing roots or forcing immediate assimilation. Rather, therapy provides a secure holding environment to honor the grief, reconcile the dual identities, and reconstruct an integrated, authentic sense of Being-in-the-world (Dasein)."
                 ),
-                Article(
-                    slug="healing-from-emotional-burnout",
-                    title_en="Healing from Emotional Burnout: Recognizing Hidden Signs and Reclaiming Rest",
-                    title_fa="بهبودی از فرسودگی عاطفی: شناخت نشانه‌های پنهان و بازگشت به تعادل روانی",
-                    excerpt_en="Burnout is not just physical tiredness—it is a chronic depletion of emotional reserves. Discover the boundary-setting principles that protect mental wellbeing.",
-                    excerpt_fa="فرسودگی صرفاً خستگی جسمی نیست، بلکه خالی شدن تدریجی مخازن عاطفی و احساسی است. اصول تعیین مرزهای سالم برای حفاظت از سلامت روان را بشناسید.",
-                    content_en=(
-                        "## The Silent Creep of Burnout\n\n"
-                        "In our culture of relentless productivity, high achievers often wear chronic exhaustion as a badge of honor. "
-                        "Yet true emotional burnout manifests as cynicism, emotional numbness, self-doubt, and persistent apathy.\n\n"
-                        "### The Three Dimensions of Burnout\n\n"
-                        "- **Exhaustion**: Feeling drained of mental and physical energy even after sleeping.\n"
-                        "- **Depersonalization**: Feeling detached from friends, family, or work responsibilities.\n"
-                        "- **Reduced Efficacy**: A nagging sense that whatever you do is never quite good enough.\n\n"
-                        "### Cultivating Boundary Health\n\n"
-                        "Rest is not a reward you earn after collapsing; it is a fundamental biological requirement. Healing requires learning to say no "
-                        "without overwhelming guilt and setting compassionate limits around your energy."
-                    ),
-                    content_fa=(
-                        "## نشانه‌های خاموش فرسودگی روانی\n\n"
-                        "در دنیایی که مدام ما را به کار و دستاورد بیشتر ترغیب می‌کند، خستگی مزمن اغلب به عنوان فداکاری تلقی می‌شود؛ اما فرسودگی "
-                        "عاطفی به شکل بی‌تفاوتی، بدبینی، احساس بی‌کفایتی و کرختی هیجانی بروز می‌کند.\n\n"
-                        "### سه بعد اصلی فرسودگی\n\n"
-                        "- **فرسودگی شدید**: تخلیه کامل انرژی حتی پس از ساعت‌ها خواب و استراحت.\n"
-                        "- **مسخ شخصیت و فاصله عاطفی**: احساس کرختی و دوری نسبت به عزیزان، کار و محیط پیرامون.\n"
-                        "- **کاهش کارآمدی ادراک‌شده**: حس پایدار مبنی بر اینکه هر کاری انجام می‌دهید هرگز کافی نیست.\n\n"
-                        "### بازتعریف مرزهای شخصی\n\n"
-                        "استراحت پاداشی نیست که پس از خرد شدن دریافت کنید؛ بلکه یک ضرورت زیستی حیاتی است. بهبودی با یادگیری «نه گفتن» محترمانه "
-                        "بدون احساس عذاب وجدان و اولویت دادن به مراقبت از خود آغاز می‌شود."
-                    ),
-                    category="Self Care",
-                    read_time=5,
-                    featured_image="/static/images/article-burnout.svg",
-                    published=True
+                content_fa=(
+                    "## توهم مهاجرت فردی\n\n"
+                    "هنگامی که فردی تمام زندگی‌اش را در دو چمدان خلاصه می‌کند و از مرزها می‌گذرد، جامعه اغلب به آن به چشم یک پیروزی فردی یا فرصت شغلی نگاه می‌کند. "
+                    "اما در اتاق روان‌درمانی اگزیستانسیال، ما می‌بینیم که هیچ مهاجرتی هرگز «یک‌نفره» رخ نمی‌دهد.\n\n"
+                    "هر فرد مهاجر، بار روانی ناپیدای خانواده، ریشه‌ها و خاطراتی را که جا گذاشته با خود حمل می‌کند. این تجربه در روانشناسی «سوگ مبهم» (Ambiguous Loss) نامیده می‌شود؛ فقدانی بدون سنگ قبر، که در آن وطن همچنان وجود دارد اما دسترس‌پذیر نیست.\n\n"
+                    "### روان دوشقه: زیستن همزمان در دو افق زمانی\n\n"
+                    "مهاجران معمولاً با نشانه‌های عمیقی از تعارض روانی دست و پنجه نرم می‌کنند:\n"
+                    "۱. **تفرقه زمانی و حسی**: جسم در تورنتو، برلین یا لندن قدم می‌زند، اما سیستم عصبی و دلواپسی‌ها همچنان در کوچه‌های تهران سیر می‌کند.\n"
+                    "۲. **عذاب وجدان بازمانده (Survivor's Guilt)**: حس مداوم شرم یا گناه در لحظاتی که فرد به امنیت یا آرامش نسبی می‌رسد، در حالی که عزیزانش با چالش‌های وطن روبرو هستند.\n"
+                    "۳. **فقدان زبان مادری و بازتاب هیجانی**: غربت زبان، عدم درک شوخی‌ها و ظرافت‌های فرهنگی، و انزوای تدریجی در ارتباطات جدید.\n\n"
+                    "### مسیر التیام در روان‌درمانی\n\n"
+                    "بهبودی به معنای بریدن از ریشه‌ها یا هضم تحمیلی در فرهنگ مقصد نیست. هدف روان‌درمانی اگزیستانسیال، به رسمیت شناختن این سوگ، بازسازی پیوند با خود واقعی و دستیابی به هویتی یکپارچه و اصیل در «اینجا و اکنون» (Dasein) است."
                 ),
-                Article(
-                    slug="communication-in-relationships-moving-from-blame-to-empathy",
-                    title_en="Communication in Relationships: Moving from Blame to Empathy",
-                    title_fa="ارتباط موثر در روابط عاطفی: گذار از سرزنش به سوی همدلی",
-                    excerpt_en="Couples often argue about dishes or schedules when they are actually asking: 'Do you still care about me?' Uncover the emotional subtext behind relationship conflict.",
-                    excerpt_fa="زوجین اغلب بر سر کارهای خانه یا برنامه‌ریزی بحث می‌کنند، در حالی که پرسش واقعی زیربنایی این است: «آیا من هنوز برایت مهم هستم؟». رمزگشایی از تعارضات زناشویی را بیاموزید.",
-                    content_en=(
-                        "## The Subtext of Couple Disagreements\n\n"
-                        "Dr. Sue Johnson, pioneer of Emotionally Focused Therapy (EFT), noted that beneath almost every repetitive argument "
-                        "lies an attachment cry: 'Are you there for me? Do I matter to you?'\n\n"
-                        "When partners feel unheard, they typically adopt one of two protective stances: attacking/criticizing or withdrawing/shutting down. "
-                        "This creates an escalating vicious cycle.\n\n"
-                        "### Shift from 'You' Statements to Vulnerability\n\n"
-                        "Instead of: 'You never listen to me and you are always glued to your phone!'\n\n"
-                        "Try expressing the tender primary feeling: 'When you are on your phone during dinner, I feel lonely and miss connecting with you.'"
-                    ),
-                    content_fa=(
-                        "## لایه‌های زیرین تعارضات زوجین\n\n"
-                        "پژوهش‌های حوزه زوج‌درمانی هیجان‌مدار (EFT) نشان می‌دهد که در پس اکثر مشاجرات تکراری، یک فریاد دلبستگی نهفته است: "
-                        "«آیا من برای تو اهمیت دارم؟ آیا در روزهای سخت کنارم هستی؟»\n\n"
-                        "هنگامی که احساس ناامنی رخنه می‌کند، یکی از طرفین معمولاً به انتقاد و حمله روی می‌آورد و دیگری به سکوت و عقب‌نشینی. "
-                        "این چرخه فرساینده هر دو را خسته می‌کند.\n\n"
-                        "### تبدیل پیام‌های سرزنشگرانه به ابراز نیاز اصیل\n\n"
-                        "به جای: «تو هیچ‌وقت به من گوش نمیدی و همش سرت تو گوشیه!»\n\n"
-                        "بیان احساس آسیب‌پذیر اصلی: «وقتی موقع شام سرگرم تلفن همراه هستی، احساس تنهایی می‌کنم و دلم برای صحبت صمیمانه با تو تنگ می‌شود»."
-                    ),
-                    category="Relationships",
-                    read_time=7,
-                    featured_image="/static/images/article-relationships.svg",
-                    published=True
+                category="Life Transitions & Identity",
+                read_time=7,
+                featured_image="/static/images/article-burnout.svg",
+                published=True
+            ),
+            Article(
+                slug="trauma-beyond-invisible-scars-ptsd",
+                title_en="Trauma: Beyond Invisible Scars — How the Body Keeps the Score and How Psychotherapy Heals",
+                title_fa="تروما فراتر از زخم‌های نادیدنی: بررسی اختلال استرس پس از سانحه (PTSD) و راه‌های بهبودی",
+                excerpt_en="Trauma is not merely what happened to you in the past; it is the imprint that experience leaves on your nervous system, reshaping your sense of safety, memory, and presence.",
+                excerpt_fa="تروما صرفاً یک خاطره تلخ در گذشته نیست؛ بلکه اثر ماندگاری است که واقعه بر سیستم عصبی و ساختار باورهای فرد بر جای می‌گذارد و احساس امنیت در زمان حال را سلب می‌کند.",
+                content_en=(
+                    "## Deconstructing Trauma\n\n"
+                    "We often assume trauma only belongs to extreme war zones or cataclysmic catastrophes. Yet developmental trauma, emotional neglect, betrayal, or chronic relational stress can leave scars just as severe.\n\n"
+                    "Trauma occurs whenever an overwhelming experience exceeds the nervous system's capacity to process and integrate it.\n\n"
+                    "### The Neurobiology of Flashbacks and Hypervigilance\n\n"
+                    "In PTSD and complex trauma, the prefrontal cortex goes offline while the amygdala stays stuck in overdrive. Time collapses: a current sound, tone of voice, or scent triggers the exact physiological dread of the original event.\n\n"
+                    "### Integrated Clinical Approaches\n\n"
+                    "1. **Somatic Grounding**: Restoring bodily safety before intellectual exploration.\n"
+                    "2. **EMDR & Bilateral Stimulation**: Reprocessing traumatic fragments so they become integrated past memories rather than active threats.\n"
+                    "3. **Existential Meaning Rebuilding**: Reclaiming agency and constructing a life defined by self-worth, not by victimization."
                 ),
-                Article(
-                    slug="mindfulness-for-busy-minds",
-                    title_en="Mindfulness for Busy Minds: Practical Everyday Micro-Practices",
-                    title_fa="ذهن‌آگاهی برای ذهن‌های پرمشغله: تمرین‌های کوچک و کاربردی روزمره",
-                    excerpt_en="You do not need to sit in silence for hours on a mountaintop. Mindfulness is about weaving mindful awareness into ordinary daily moments.",
-                    excerpt_fa="ذهن‌آگاهی نیازمند ساعت‌ها نشستن در سکوت کوهستان نیست؛ بلکه هنر آوردن توجه آگاهانه و مهربانانه به لحظه‌های ساده زندگی روزمره است.",
-                    content_en=(
-                        "## Demystifying Mindfulness\n\n"
-                        "Many clients tell me: 'Dr. Fathi, I cannot meditate; my brain simply never stops thinking.'\n\n"
-                        "Good news: mindfulness is not about emptying your mind. The mind thinks just as the heart beats. "
-                        "Mindfulness is simply noticing that you are thinking, without chasing or battling the thoughts.\n\n"
-                        "### Three 60-Second Micro-Practices\n\n"
-                        "1. **Mindful Morning Sip**: Feel the warmth of your morning tea or coffee in your hands before taking the first sip.\n"
-                        "2. **The Doorway Breath**: Every time you walk through a doorway into another room, take one deep, grounding conscious breath.\n"
-                        "3. **Physical Sensations Check-in**: Drop your shoulders away from your ears, unclench your jaw, and let your belly soften."
-                    ),
-                    content_fa=(
-                        "## رهایی از سوءتعبیرها درباره ذهن‌آگاهی\n\n"
-                        "بسیاری از مراجعین می‌گویند: «من نمی‌توانم مدیتیشن کنم، چون افکارم یک لحظه هم متوقف نمی‌شوند.»\n\n"
-                        "خبر خوب این است که هدف ما خاموش کردن افکار نیست. کار مغز فکر کردن است، همان‌طور که کار قلب تپیدن است. "
-                        "ذهن‌آگاهی یعنی متوجه شدن حضور افکار بدون درگیر شدن یا قضاوت کردن آن‌ها.\n\n"
-                        "### سه تمرین ۶۰ ثانیه‌ای برای زندگی روزمره\n\n"
-                        "۱. **نوشیدن آگاهانه چای یا قهوه**: قبل از اولین جرعه، گرمای فنجان و عطر آن را با تمام وجود حس کنید.\n"
-                        "۲. **تنفس پشت چارچوب در**: هر بار که از درِ اتاقی عبور می‌کنید، یک نفس عمیق و آگاهانه بکشید.\n"
-                        "۳. **وارسی وضعیت بدنی**: شانه‌های خود را پایین بیندازید، عضلات فک را آزاد کنید و اجازه دهید شکم در آرامش قرار گیرد."
-                    ),
-                    category="Mindfulness",
-                    read_time=4,
-                    featured_image="/static/images/article-mindfulness.svg",
-                    published=True
-                )
-            ]
-            for art in articles:
-                db.add(art)
-            print("Seeded 4 comprehensive bilingual articles")
+                content_fa=(
+                    "## بازشناسی مفهوم واقعی تروما\n\n"
+                    "بسیاری گمان می‌کنند تروما تنها مختص حوادث مرگبار یا جنگ‌های ویرانگر است. اما ترومای رشدی، نادیده‌گرفته‌شدن در کودکی، خیانت‌های عاطفی و فشارهای روانی مزمن می‌توانند همان اندازه سیستم روانی فرد را از هم بپاشند.\n\n"
+                    "تروما زمانی رخ می‌دهد که شدت یک تجربه دردناک از ظرفیت پردازش و تاب‌آوری سیستم عصبی فراتر می‌رود.\n\n"
+                    "### فیزیولوژی کابوس‌ها و گوش‌به‌زنگی مداوم\n\n"
+                    "در اختلال استرس پس از سانحه (PTSD)، مغز منطقی به حاشیه رانده شده و مرکز هشدار (آمیگدال) در وضعیت آماده‌باش قرمز باقی می‌ماند. زمان در هم می‌شکند: یک بوی خاص، تغییر لحن صدا یا تنشی ساده در محیط کار، تمام هراس واقعه اولیه را در ثانیه‌ای زنده می‌کند.\n\n"
+                    "### راهکارهای درمانی در کلینیک دازاین\n\n"
+                    "۱. **تثبیت حسی و آرام‌سازی جسمانی**: بازگرداندن حس امنیت بنیادین به تن پیش از واکاوی ذهنی.\n"
+                    "۲. **پردازش تروما و EMDR**: تبدیل تکه‌های پراکنده و منجمد خاطره به رویدادهایی که «به گذشته تعلق دارند» و تهدید اکنون نیستند.\n"
+                    "۳. **بازسازی معنای وجودی**: بازپس‌گیری عاملیت زندگی و زیستن بر مبنای ارزش‌های اصیل، نه بر پایه دفاع‌های آسیب‌زده."
+                ),
+                category="Trauma & Healing",
+                read_time=6,
+                featured_image="/static/images/article-anxiety.svg",
+                published=True
+            ),
+            Article(
+                slug="hide-your-defilement-psychoanalysis-superego-shame",
+                title_en="Hide Your Defilement: Psychoanalysis, the Tyranny of the Superego, and Chronic Shame",
+                title_fa="«نجاستت را پنهان کن!»: با نگاهی به روانکاوی، سوپرایگو، عقده شرم و بازداری‌های روانی",
+                excerpt_en="From early childhood taboos to adult neurosis, the internal judge (Superego) demands relentless purification. Explore how unconscious shame stifles instinct and vitality.",
+                excerpt_fa="از تابوهای دوران کودکی تا وسواس‌های بزرگسالی، قاضی سرزنشگر درونی مدام بر پنهان‌سازی و تطهیر اصرار دارد. واکاوی مکانیزم‌های دفاعی و عقده شرم در روانکاوی فرویدی.",
+                content_en=(
+                    "## The Birth of the Punitive Superego\n\n"
+                    "Sigmund Freud demonstrated that our most debilitating adult anxieties do not originate from external oppressors, but from an internalized inquisitor—the **Superego**.\n\n"
+                    "From our earliest bodily training, human cultures whisper: 'Conceal your bodily functions, hide your desires, conceal your flaws.' Over time, this natural socialization can metastasize into pathological shame.\n\n"
+                    "### Shame vs. Guilt\n\n"
+                    "- **Guilt**: 'I did something mistakes.' (Focus on behavior)\n"
+                    "- **Shame**: 'I am fundamentally flawed, soiled, and unlovable.' (Focus on Being)\n\n"
+                    "In our clinical work, dismantling this tyrannical inner critic is central to freeing the individual's creative vitality."
+                ),
+                content_fa=(
+                    "## پیدایش سوپرایگوی تنبیه‌گر\n\n"
+                    "زیگموند فروید نشان داد که عمیق‌ترین اضطراب‌ها و وسواس‌های بزرگسالی نه از دشمنان بیرونی، بلکه از یک قاضی درونی‌شده به نام «سوپرایگو» یا فراخود سرچشمه می‌گیرند.\n\n"
+                    "از نخستین آموزش‌های تربیتی دوران کودکی، این پیام در ناخودآگاه کاشته می‌شود: «ناپاکی‌ات را پنهان کن، غرایزت را سرکوب کن، نقص‌هایت را بپوشان». با گذشت زمان، این آموزه‌ها به یک شرم مزمن و فلج‌کننده وجودی بدل می‌شوند.\n\n"
+                    "### تمایز بنیادین گناه و شرم\n\n"
+                    "- **احساس گناه**: «من کار اشتباهی انجام دادم» (تمرکز بر رفتار که قابل جبران است).\n"
+                    "- **احساس شرم عمیق**: «من اساساً کثیف، ناکافی و دوست‌نداشتنی هستم» (تمرکز بر هستی فرد که به انزوا و خودتخریبی می‌انجامد).\n\n"
+                    "در جلسات روان‌درمانی تحلیلی، ما ریشه‌های این قضاوت‌های بیرحمانه را کالبدشکافی می‌کنیم تا انرژی روانی که صرف خودپنهان‌سازی شده، به سرزندگی، اصالت و خلاقیت تبدیل گردد."
+                ),
+                category="Psychoanalysis & Mind",
+                read_time=8,
+                featured_image="/static/images/article-relationships.svg",
+                published=True
+            ),
+            Article(
+                slug="the-heart-operated-the-mind-frozen-in-surgery",
+                title_en="The Heart Was Operated On, But the Mind Remains in Surgery: Psychosomatics and Health Anxiety",
+                title_fa="«قلبی که جراحی شد، اما ذهن هنوز در اتاق عمل است!»: روان‌تنی، اضطراب بیماری و ارتباط ذهن و بدن",
+                excerpt_en="Physical healing on an operating table does not guarantee psychic recovery. Why does medical trauma persist in the autonomic nervous system long after the incision has healed?",
+                excerpt_fa="ترمیم جسم بر روی تخت جراحی، به معنای التیام روان نیست. چرا ترومای بیماری و بیهوشی در سیستم عصبی خودمختار باقی می‌ماند و چگونه به روان‌درمانی پاسخ می‌دهد؟",
+                content_en=(
+                    "## The Cartesian Illusion\n\n"
+                    "Modern medicine has performed miracles by treating the physical body as an intricate biological machine. Yet cardiologists, surgeons, and physicians often encounter a puzzling phenomenon: "
+                    "the patient's lab results are flawless, the ECG is normal, yet the patient feels terrified, breathless, and convinced they are dying.\n\n"
+                    "### Somatization of Dread\n\n"
+                    "The mind and body are an indivisible continuum. When a medical crisis threatens our mortality, the brain experiences an existential shock. The surgical environment—loss of control under anesthesia, needles, alarms—is perceived by the nervous system as an existential assault.\n\n"
+                    "### Re-inhabiting the Body\n\n"
+                    "Psychotherapy bridges the chasm between medical restoration and psychological peace, enabling clients to trust their heartbeat once more."
+                ),
+                content_fa=(
+                    "## خطای تفکیک ذهن و جسم\n\n"
+                    "پزشکی مدرن دستاوردهای شگرفی در نجات جان انسان‌ها داشته است، اما جراحان و متخصصان قلب مکرراً با بیمارانی روبرو می‌شوند که تمام آزمایش‌ها و اکوهای قلبی‌شان کاملاً نرمال است، ولی همچنان با تپش قلب شدید، وحشت مرگ و احساس تنگی نفس به اورژانس بازمی‌گردند.\n\n"
+                    "### روان‌تنی و وحشت منجمدشده\n\n"
+                    "ذهن و تن، کلیتی یگانه هستند. هنگامی که یک بحران جسمانی مرگ‌آگاهی را بیدار می‌کند، اتاق عمل، صداهای آلارم مانیتورها و احساس ناتوانی محض زیر بیهوشی، شوکی اگزیستانسیال ایجاد می‌کند که سال‌ها بعد می‌تواند در قالب حملات پانیک یا اضطراب سلامتی بازتولید شود.\n\n"
+                    "### بازگشت اعتماد به طپش‌های زندگی\n\n"
+                    "در رویکرد روان‌درمانی یکپارچه‌نگر، به مراجع کمک می‌شود تا پیام‌های اضطراب را از خطرات واقعی تفکیک کند و رابطه‌ای آشتی‌جویانه و امن با جسم خویش برقرار سازد."
+                ),
+                category="Psychosomatics",
+                read_time=6,
+                featured_image="/static/images/article-mindfulness.svg",
+                published=True
+            ),
+            Article(
+                slug="self-harm-and-injury-among-youth",
+                title_en="Self-Harm and Injury Among Youth: Decoding Non-Suicidal Self-Injury as a Language of Pain",
+                title_fa="رفتارهای خودآسیب‌رسان و خودزنی در میان جوانان: رمزگشایی از رنج هیجانی و راه‌های مداخله تخصصی",
+                excerpt_en="Self-injury is not attention-seeking—it is a desperate somatic coping mechanism to regulate unbearable psychic agony. An evidence-based guide for families and educators.",
+                excerpt_fa="خودزنی جلب توجه نیست؛ بلکه تلاش درمانده جسمانی برای تنظیم درد هیجانی غیرقابل‌تحمل است. راهنمای بالینی و همدلانه برای خانواده‌ها و نسل جوان.",
+                content_en=(
+                    "## Non-Suicidal Self-Injury (NSSI)\n\n"
+                    "When psychological anguish reaches a breaking point and words fail, the body becomes the canvas for the unsaid.\n\n"
+                    "### Why Do Individuals Self-Harm?\n\n"
+                    "- **Affect Regulation**: Physical pain stimulates endorphin release, providing temporary numbness from emotional turmoil.\n"
+                    "- **Anti-Dissociation**: Feeling tangible physical sensation to escape deep numbness or detachment.\n"
+                    "- **Self-Punishment**: Enacting internalized blame and feelings of unworthiness.\n\n"
+                    "### Compassionate Interventions\n\n"
+                    "Shaming or confiscating objects rarely solves the core distress. Dialectical Behavior Therapy (DBT), somatic grounding, and existential validation offer real alternatives to heal the underlying wound."
+                ),
+                content_fa=(
+                    "## درک رفتارهای خودآسیب‌رسان غیرخودکشی (NSSI)\n\n"
+                    "هنگامی که درد و غلیان هیجانی به نقطه‌ای غیرقابل تحمل می‌رسد و واژگان برای ابراز رنج کافی نیستند، جسم به بستری برای بیان ناگفته‌ها بدل می‌شود.\n\n"
+                    "### چرا افراد به خودآسیب‌رسانی روی می‌آورند؟\n\n"
+                    "۱. **تنظیم و تسکین هیجانی**: درد فیزیکی با ترشح اندورفین، کرختی موقتی در برابر طوفان هیجانات ایجاد می‌کند.\n"
+                    "۲. **فرار از گسست و کرختی روانی (Anti-Dissociation)**: حس کردن دردی ملموس برای اطمینان از زنده بودن در دوران بی‌رمقی احساسی.\n"
+                    "۳. **سرزنش و خودتنبیهی ناهشیار**: تخلیه خشم درونی‌شده ناشی از احساس بی‌ارزشی.\n\n"
+                    "### رویکرد همدلانه و تخصصی در درمان\n\n"
+                    "سرزنش، تحقیر یا تهدید هرگز گره‌گشا نیست. درمان رفتارشناختی دیالکتیکی (DBT)، مهارت‌های تحمل پریشانی و فضایی امن در روان‌درمانی به جوانان می‌آموزد که چگونه بدون آسیب به خود، هیجانات سنگین را مدیریت کنند."
+                ),
+                category="Youth & Emotional Health",
+                read_time=7,
+                featured_image="/static/images/article-default.svg",
+                published=True
+            )
+        ]
+        for art in articles:
+            db.add(art)
+        print("Seeded 5 authentic articles from Dr. Hassan Agha Nasiri / Dasein Journal")
 
         # 4. Initial Sample Appointments for Admin view
         if db.query(AppointmentRequest).count() == 0:

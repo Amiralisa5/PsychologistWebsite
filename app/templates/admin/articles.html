@@ -48,15 +48,28 @@
           {% else %}
             <span class="status-pill status-cancelled">● Draft</span>
           {% endif %}
+          
+          <div style="margin-top: 0.35rem; display: flex; gap: 0.3rem;">
+            {% if art.telegram_posted %}
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0284c7; padding: 1px 5px; border-radius: 4px;" title="Broadcasted to Telegram">✈️ TG Sent</span>
+            {% endif %}
+            {% if art.instagram_posted %}
+              <span style="font-size: 0.72rem; background: #ffe4e6; color: #e11d48; padding: 1px 5px; border-radius: 4px;" title="Published to Instagram">📸 IG Sent</span>
+            {% endif %}
+          </div>
         </td>
         <td style="font-size: 0.82rem; color: var(--text-muted);">
           {{ art.created_at.strftime('%Y-%m-%d') }}
         </td>
         <td>
-          <div style="display: flex; gap: 0.4rem;">
+          <div style="display: flex; gap: 0.4rem; align-items: center;">
             <a href="/blog/{{ art.slug }}" target="_blank" class="btn btn-outline btn-sm" title="View Article">
               👁️
             </a>
+            <button type="button" class="btn btn-outline btn-sm" style="color: #0284c7; border-color: #bae6fd;"
+              onclick="broadcastToTelegram({{ art.id }}, '{{ art.title_fa | escape }}')" title="Broadcast to Telegram Channel">
+              ✈️ TG
+            </button>
             <button type="button" class="btn btn-outline btn-sm" style="color: var(--danger); border-color: #fee2e2;"
               onclick="deleteArticle({{ art.id }}, '{{ art.title_en | escape }}')">
               🗑️
@@ -146,10 +159,24 @@
         </div>
 
         <div class="form-group">
-          <label class="checkbox-label">
+          <label class="checkbox-label" style="font-weight: 600;">
             <input type="checkbox" name="published" value="true" checked>
             <span>Publish immediately (visible on public website)</span>
           </label>
+        </div>
+
+        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+          <strong style="color: #166534; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Automated Social Broadcasting:</strong>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" name="post_telegram" value="true" checked>
+              <span>✈️ Automatically broadcast to Telegram Channel (@dasein_journal)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="post_instagram" value="true">
+              <span>📸 Automatically publish to Instagram Page (@dasein.journal)</span>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -168,5 +195,23 @@
   document.getElementById("closeArticleModal")?.addEventListener("click", () => {
     document.getElementById("articleModal")?.classList.remove("active");
   });
+
+  async function broadcastToTelegram(id, title) {
+    if (!confirm(`Broadcast article "${title}" to Telegram channel (@dasein_journal)?`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/admin/articles/${id}/publish-telegram`, { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Successfully broadcasted to Telegram!");
+        window.location.reload();
+      } else {
+        alert("❌ Error: " + data.detail);
+      }
+    } catch (e) {
+      alert("Network error: " + e.message);
+    }
+  }
 </script>
 {% endblock %}

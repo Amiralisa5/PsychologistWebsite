@@ -1,0 +1,195 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Social Channels &amp; Auto-Publishing{% endblock %}
+
+{% block admin_content %}
+{% if success_msg %}
+<div class="form-alert success" style="display: block; margin-bottom: 1.5rem;">
+  {{ success_msg }}
+</div>
+{% endif %}
+
+{% if error_msg %}
+<div class="form-alert error" style="display: block; margin-bottom: 1.5rem;">
+  {{ error_msg }}
+</div>
+{% endif %}
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1100px;">
+  <!-- Telegram Channel Configuration -->
+  <div class="form-shell" style="padding: 2rem;">
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+        ✈️
+      </div>
+      <div>
+        <h3 style="font-size: 1.2rem; font-family: var(--font-sans); margin: 0;">Telegram Channel Auto-Post</h3>
+        <small style="color: var(--text-muted);">Target: <a href="https://t.me/dasein_journal" target="_blank" style="color: #0284c7; font-weight: 600;">@dasein_journal</a></small>
+      </div>
+    </div>
+
+    <form action="/admin/social" method="POST">
+      <input type="hidden" name="section" value="telegram">
+
+      <div class="form-group">
+        <label class="checkbox-label" style="font-weight: 700; color: #111827; margin-bottom: 1rem;">
+          <input type="checkbox" name="telegram_enabled" value="true" {% if social.telegram_enabled %}checked{% endif %}>
+          <span>Enable Telegram Integration</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="telegram_channel_id">Telegram Channel / Chat ID</label>
+        <input type="text" id="telegram_channel_id" name="telegram_channel_id" value="{{ social.telegram_channel_id or '@dasein_journal' }}" required placeholder="@dasein_journal">
+        <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.35rem;">
+          Public handle (e.g. <code>@dasein_journal</code>) or numeric ID for private channels (e.g. <code>-100...</code>).
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="telegram_bot_token">Telegram Bot Token</label>
+        <input type="text" id="telegram_bot_token" name="telegram_bot_token" value="{{ social.telegram_bot_token }}" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ">
+        <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.35rem;">
+          Created via <a href="https://t.me/BotFather" target="_blank" style="color: #0284c7;">@BotFather</a>. Ensure the bot is added as an <strong>Administrator</strong> with post permissions to @dasein_journal.
+        </small>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label class="checkbox-label">
+          <input type="checkbox" name="telegram_auto_publish" value="true" {% if social.telegram_auto_publish %}checked{% endif %}>
+          <span>Automatically broadcast new articles when published</span>
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="submit" class="btn btn-primary btn-sm">Save Telegram Settings</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="testTelegram()">Send Test Message</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Instagram Page Configuration -->
+  <div class="form-shell" style="padding: 2rem;">
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #ffe4e6; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+        📸
+      </div>
+      <div>
+        <h3 style="font-size: 1.2rem; font-family: var(--font-sans); margin: 0;">Instagram Auto-Publish</h3>
+        <small style="color: var(--text-muted);">Target: <a href="https://instagram.com/dasein.journal" target="_blank" style="color: #e11d48; font-weight: 600;">@dasein.journal</a></small>
+      </div>
+    </div>
+
+    <form action="/admin/social" method="POST">
+      <input type="hidden" name="section" value="instagram">
+
+      <div class="form-group">
+        <label class="checkbox-label" style="font-weight: 700; color: #111827; margin-bottom: 1rem;">
+          <input type="checkbox" name="instagram_enabled" value="true" {% if social.instagram_enabled %}checked{% endif %}>
+          <span>Enable Instagram Graph API</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="instagram_page_handle">Instagram Handle</label>
+        <input type="text" id="instagram_page_handle" name="instagram_page_handle" value="{{ social.instagram_page_handle or 'dasein.journal' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="instagram_account_id">Instagram Business/Creator Account ID</label>
+        <input type="text" id="instagram_account_id" name="instagram_account_id" value="{{ social.instagram_account_id }}" placeholder="e.g. 17841400000000000">
+        <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.35rem;">
+          Obtained from Meta for Developers / Graph API Explorer for your linked professional page.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="instagram_access_token">Meta Graph API Access Token (Long-Lived)</label>
+        <textarea id="instagram_access_token" name="instagram_access_token" rows="2" placeholder="EAABwz... (Never expires or 60-day token)">{{ social.instagram_access_token }}</textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label class="checkbox-label">
+          <input type="checkbox" name="instagram_auto_publish" value="true" {% if social.instagram_auto_publish %}checked{% endif %}>
+          <span>Automatically publish new articles to Instagram feed</span>
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="submit" class="btn btn-primary btn-sm">Save Instagram Settings</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Quick Manual Post Generator & Preview -->
+<div class="form-shell" style="max-width: 1100px; margin-top: 2rem; padding: 2rem;">
+  <h3 style="font-size: 1.15rem; font-family: var(--font-sans); margin-bottom: 1rem;">
+    📋 Ready-to-Copy Instagram Caption Formatter
+  </h3>
+  <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+    Select an article to generate perfectly formatted Persian caption text with hashtags for quick manual posting if Meta Graph API is not connected:
+  </p>
+
+  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+    <select id="articlePreviewSelect" style="max-width: 400px; padding: 0.5rem 0.85rem;">
+      <option value="">-- Choose an article to preview caption --</option>
+      {% for art in articles %}
+      <option value="{{ art.id }}">{{ art.title_fa }}</option>
+      {% endfor %}
+    </select>
+    <button type="button" class="btn btn-outline btn-sm" onclick="copyCaption()">Copy Caption to Clipboard</button>
+  </div>
+
+  <textarea id="captionPreviewArea" rows="7" style="background-color: var(--bg-alt); font-size: 0.92rem; direction: rtl; font-family: var(--font-farsi); line-height: 1.8;" readonly placeholder="انتخاب یک مقاله برای مشاهده کپشن اینستاگرام..."></textarea>
+</div>
+
+<script>
+  const articleCaptions = {
+    {% for art in articles %}
+    "{{ art.id }}": `🌿 {{ art.title_fa }}\n\nدکتر حسن آقانصیری | ژورنال دازاین\n\n{{ art.excerpt_fa }}\n\n─── ⋆⋅☆⋅⋆ ───\nبرای مطالعه متن کامل و تحلیلی این نوشتار، به وب‌سایت دازاین (لینک در بیو) یا کانال تلگرام مراجعه فرمایید.\n\n🔗 وب‌سایت: http://127.0.0.1:8000/blog/{{ art.slug }}?lang=fa\n✈️ تلگرام: @dasein_journal\n\n#دکتر_حسن_آقانصیری #دازاین #روانشناسی #اگزیستانسیال #تروما #روانکاوی #dasein_journal`,
+    {% endfor %}
+  };
+
+  const select = document.getElementById("articlePreviewSelect");
+  const area = document.getElementById("captionPreviewArea");
+
+  select?.addEventListener("change", () => {
+    area.value = articleCaptions[select.value] || "";
+  });
+
+  function copyCaption() {
+    if (!area.value) {
+      alert("Please select an article first.");
+      return;
+    }
+    navigator.clipboard.writeText(area.value);
+    alert("Caption copied to clipboard!");
+  }
+
+  async function testTelegram() {
+    const token = document.getElementById("telegram_bot_token").value;
+    const channel = document.getElementById("telegram_channel_id").value;
+    if (!token) {
+      alert("Please enter a Telegram Bot Token first.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/admin/social/test-telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bot_token: token, channel_id: channel })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Test message successfully sent to Telegram channel: " + channel);
+      } else {
+        alert("❌ Error: " + data.detail);
+      }
+    } catch (e) {
+      alert("Network error: " + e.message);
+    }
+  }
+</script>
+{% endblock %}

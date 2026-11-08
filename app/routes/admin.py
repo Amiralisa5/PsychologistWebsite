@@ -5,8 +5,14 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article
+from app.models import AdminUser, TherapistProfile, AppointmentRequest, Article, SocialSettings
 from app.auth import verify_password, create_session_token, verify_session_token
+from app.services.social_service import (
+    send_telegram_post,
+    send_instagram_post,
+    format_article_for_telegram,
+    format_article_for_instagram
+)
 
 router = APIRouter(prefix="/admin")
 
@@ -158,6 +164,8 @@ def create_article_action(
     content_en: str = Form(...),
     content_fa: str = Form(...),
     published: bool = Form(False),
+    post_telegram: bool = Form(False),
+    post_instagram: bool = Form(False),
     db: Session = Depends(get_db)
 ):
     user = get_admin_user_from_cookie(request)
@@ -185,12 +193,167 @@ def create_article_action(
 
     db.add(new_art)
     db.commit()
+    db.refresh(new_art)
+
+    # Auto-broadcast to social channels if selected
+    social = db.query(SocialSettings).first()
+    base_url = str(request.base_url).rstrip("/")
+
+    if post_telegram and social and social.telegram_bot_token:
+        tg_text = format_article_for_telegram(new_art, base_url)
+        ok, msg_id = send_telegram_post(
+            bot_token=social.telegram_bot_token,
+            chat_id=social.telegram_channel_id or "@dasein_journal",
+            text=tg_text
+        )
+        if ok:
+            new_art.telegram_posted = True
+            new_art.telegram_post_id = msg_id
+            db.commit()
+
+    if post_instagram and social and social.instagram_access_token and social.instagram_account_id:
+        ig_caption = format_article_for_instagram(new_art, base_url)
+        # Note: image_url needs to be public HTTPS; if local, this is logged/prepared
+        ok, post_id = send_instagram_post(
+            account_id=social.instagram_account_id,
+            access_token=social.instagram_access_token,
+            caption=ig_caption,
+            image_url=f"{base_url}{new_art.featured_image}"
+        )
+        if ok:
+            new_art.instagram_posted = True
+            new_art.instagram_post_id = post_id
+            db.commit()
 
     return RedirectResponse(url="/admin/articles", status_code=303)
 
 
-@router.get("/profile", response_class=HTMLResponse)
-def profile_view(request: Request, success: str = None, db: Session = Depends(get_db)):
+@router.get("/social", response_class=HTMLResponse)
+def social_view(request: Request, success: str = None, error: str = None, db: Session = Depends(get_db)):
+    user = get_admin_user_from_cookie(request)
+    if not user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    social = db.query(SocialSettings).first()
+    if not social:
+        social = SocialSettings()
+        db.add(social)
+        db.commit()
+
+    articles = db.query(Article).order_by(Article.created_at.desc()).all()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/social.html",
+        context={
+            "user": user,
+            "social": social,
+            "articles": articles,
+            "success_msg": "Social channels settings updated successfully!" if success else None,
+            "error_msg": error,
+            "active_tab": "social"
+        }
+    )
+
+
+@router.post("/social")
+def update_social_action(
+    request: Request,
+    section: str = Form("telegram"),
+    telegram_enabled: bool = Form(False),
+    telegram_channel_id: str = Form("@dasein_journal"),
+    telegram_bot_token: str = Form(""),
+    telegram_auto_publish: bool = Form(False),
+    instagram_enabled: bool = Form(False),
+    instagram_page_handle: str = Form("dasein.journal"),
+    instagram_account_id: str = Form(""),
+    instagram_access_token: str = Form(""),
+    instagram_auto_publish: bool = Form(False),
+    db: Session = Depends(get_db)
+):
+    user = get_admin_user_from_cookie(request)
+    if not user:
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    social = db.query(SocialSettings).first()
+    if not social:
+        social = SocialSettings()
+        db.add(social)
+
+    if section == "telegram":
+        social.telegram_enabled = telegram_enabled
+        social.telegram_channel_id = telegram_channel_id.strip()
+        social.telegram_bot_token = telegram_bot_token.strip()
+        social.telegram_auto_publish = telegram_auto_publish
+    elif section == "instagram":
+        social.instagram_enabled = instagram_enabled
+        social.instagram_page_handle = instagram_page_handle.strip()
+        social.instagram_account_id = instagram_account_id.strip()
+        social.instagram_access_token = instagram_access_token.strip()
+        social.instagram_auto_publish = instagram_auto_publish
+
+    db.commit()
+    return RedirectResponse(url="/admin/social?success=1", status_code=303)
+
+
+@router.post("/social/test-telegram")
+async def test_telegram_action(request: Request):
+    user = get_admin_user_from_cookie(request)
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    body = await request.json()
+    bot_token = body.get("bot_token", "")
+    channel_id = body.get("channel_id", "@dasein_journal")
+
+    test_message = (
+        "🌿 <b>تست اتصال ژورنال دازاین | Dasein Journal</b>\n\n"
+        "این یک پیام آزمایشی برای تایید اتصال خودکار پنل مدیریت به کانال تلگرام است.\n"
+        "🆔 @dasein_journal"
+    )
+
+    ok, res = send_telegram_post(bot_token=bot_token, chat_id=channel_id, text=test_message)
+    if ok:
+        return {"success": True, "message_id": res}
+    else:
+        raise HTTPException(status_code=400, detail=res)
+
+
+@router.post("/articles/{id}/publish-telegram")
+def publish_article_to_telegram(
+    id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    user = get_admin_user_from_cookie(request)
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    article = db.query(Article).filter(Article.id == id).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+
+    social = db.query(SocialSettings).first()
+    if not social or not social.telegram_bot_token:
+        raise HTTPException(status_code=400, detail="Telegram Bot Token is not configured. Please enter your Bot Token in the 'Social Channels' tab.")
+
+    base_url = str(request.base_url).rstrip("/")
+    tg_text = format_article_for_telegram(article, base_url)
+
+    ok, res = send_telegram_post(
+        bot_token=social.telegram_bot_token,
+        chat_id=social.telegram_channel_id or "@dasein_journal",
+        text=tg_text
+    )
+
+    if ok:
+        article.telegram_posted = True
+        article.telegram_post_id = res
+        db.commit()
+        return {"success": True, "message_id": res}
+    else:
+        raise HTTPException(status_code=400, detail=f"Telegram Error: {res}")
+
     user = get_admin_user_from_cookie(request)
     if not user:
         return RedirectResponse(url="/admin/login", status_code=302)
